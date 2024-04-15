@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>papershare.rest - Обмін книгами</title>
+    <!-- Підключення Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Ваші стилі та додаткові CSS-файли можна додати тут -->
+</head>
+<body>
+
+<!-- Хедер -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">papershare.rest</a>
+        <!-- Додайте інші елементи хедера, якщо потрібно -->
+    </div>
+</nav>
+
+<!-- Основний зміст -->
+<div class="container mt-4">
+    <h2 class="mb-4">Обмін книгами</h2>
+
+    <!-- Динамічно підвантажувана сітка з книгами -->
+    <div class="row" id="booksGrid" th:each="book : ${books}">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${book.title}"></h5>
+                    <p class="card-text" th:text="${book.author}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Футер -->
+<footer class="bg-dark text-white text-center py-3">
+    <p>&copy; 2024 papershare.rest</p>
+</footer>
+
+<!-- Підключення Bootstrap JS та Popper.js (необхідно для роботи деяких Bootstrap компонентів) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

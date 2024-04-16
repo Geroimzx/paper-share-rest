@@ -1,11 +1,14 @@
 package com.papershare.papershare.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "usr")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -18,20 +21,39 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String email;
-
     private String firstName;
     private String lastName;
 
     @OneToMany(mappedBy = "owner")
-    private List<Book> ownedBooks;
+    private Collection<Book> ownedBooks;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    private String roles;
+
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
+    public User(Long id, String username, String password, String email, String firstName, String lastName, Collection<Book> ownedBooks, String roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.ownedBooks = ownedBooks;
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;
@@ -81,23 +103,19 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<Book> getOwnedBooks() {
+    public Collection<Book> getOwnedBooks() {
         return ownedBooks;
     }
 
-    public void setOwnedBooks(List<Book> ownedBooks) {
+    public void setOwnedBooks(Collection<Book> ownedBooks) {
         this.ownedBooks = ownedBooks;
     }
 
-    public List<Role> getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
-
-    // Constructors (optional)
-
-    // ...
 }

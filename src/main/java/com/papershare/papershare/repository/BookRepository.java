@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
     public Book save(Book book);
 

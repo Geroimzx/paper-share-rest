@@ -1,5 +1,6 @@
 package com.papershare.papershare.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping()
 public class HomeController {
-
     @GetMapping
     public String index(Model model) {
         // Симуляція отримання списку книг з бази даних або іншого джерела
@@ -19,6 +19,21 @@ public class HomeController {
 
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);
+
+        // Повертаємо назву HTML файлу, який ми хочемо відобразити
+        return "index";
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/some")
+    public String q(Model model) {
+        // Симуляція отримання списку книг з бази даних або іншого джерела
+        List<Book> books = getSampleBooks();
+
+        // Передача списку книг на сторінку через Thymeleaf
+        model.addAttribute("books", books);
+
+        System.out.println("secret");
 
         // Повертаємо назву HTML файлу, який ми хочемо відобразити
         return "index";

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Вхід</h1>
+    <div th:if="${param.success}">
+        You successfully registered. Please use your credentials to log in.
+    </div>
+    <div th:if="${param.error}">
+        Login or password incorrect.
+    </div>
+
+    <div th:if="${param.logout}">
+        You've been logged out.
+    </div>
+    <form th:action="@{/user/auth/login_processing}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label th:for="username">Ім'я користувача</label>
+            <input type="text" th:field="*{username}">
+        </div>
+        <div class="form-group">
+            <label th:for="password">Пароль</label>
+            <input type="password" th:field="*{password}">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Увійти">
+    </form>
+
+</div>
+</body>
+</html>

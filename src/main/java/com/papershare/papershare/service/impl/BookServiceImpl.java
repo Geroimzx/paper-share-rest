@@ -12,8 +12,15 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
 
+    private BookRepository bookRepository;
+
+    public BookServiceImpl() {
+    }
+
     @Autowired
-    BookRepository bookRepository;
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public List<Book> getAllBooks() {

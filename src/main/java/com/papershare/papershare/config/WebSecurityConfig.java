@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,17 +37,15 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers("/user/auth/**").permitAll()
+                        .requestMatchers("/", "/user/auth/sign_up", "/user/auth/sign_in").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/auth/sign_in")
-                        .loginProcessingUrl("/user/auth/login_processing")
                         .defaultSuccessUrl("/some", true)
-                        .failureUrl("/user/auth/sign_in?error=true")
                         .permitAll())
                 .logout(LogoutConfigurer::permitAll)
+                .httpBasic(withDefaults())
                 .build();
     }
 
@@ -56,12 +55,13 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    public AuthenticationManager authenticationManager() throws Exception {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 
-        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
 
-        return authenticationManagerBuilder.build();
+        return new ProviderManager(daoAuthenticationProvider);
     }
 
     @Bean
@@ -73,6 +73,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web) ->
                 web.ignoring()
-                        .requestMatchers("/js/**", "/css/**");
+                        .requestMatchers("/js/**", "/css/**", "/favicon.ico");
     }
 }

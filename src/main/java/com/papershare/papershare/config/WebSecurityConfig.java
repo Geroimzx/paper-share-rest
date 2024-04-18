@@ -37,14 +37,20 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/user/auth/sign_up", "/user/auth/sign_in").permitAll()
+                        .requestMatchers("/", "/user/auth/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/auth/sign_in")
                         .defaultSuccessUrl("/some", true)
                         .permitAll())
-                .logout(LogoutConfigurer::permitAll)
+                .logout(logout -> logout
+                        .logoutUrl("/user/auth/log_out")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
                 .httpBasic(withDefaults())
                 .build();
     }

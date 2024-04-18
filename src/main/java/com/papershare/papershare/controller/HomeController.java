@@ -1,6 +1,8 @@
 package com.papershare.papershare.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +35,10 @@ public class HomeController {
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);
 
-        System.out.println("secret");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
+        System.out.println(currentPrincipalName);
 
         // Повертаємо назву HTML файлу, який ми хочемо відобразити
         return "index";

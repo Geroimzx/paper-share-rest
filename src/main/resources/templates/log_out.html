@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Вихід - PaperShare</title>
 </head>
 <body>
-    <h1>Logout</h1>
-    <p>You have been logged out.</p>
-    <a href="/">Home</a>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <h1>Вихід</h1>
+    <p>Ви вийшли.</p>
+    <a href="/">Головна</a>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

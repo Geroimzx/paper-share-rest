@@ -37,12 +37,12 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/user/auth/*").permitAll()
+                        .requestMatchers("/", "/user/auth/**", "/book/view/**", "/about").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/auth/sign_in")
-                        .defaultSuccessUrl("/some", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/user/auth/log_out")
@@ -79,6 +79,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web) ->
                 web.ignoring()
-                        .requestMatchers("/js/**", "/css/**", "/favicon.ico");
+                        .requestMatchers("/static/**", "/images/**");
     }
 }

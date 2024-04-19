@@ -1,37 +1,65 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>papershare.rest - Обмін книгами</title>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <title>Обмін книгами - PaperShare</title>
+    <div th:replace="~{fragments/links}"></div>
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-<div class="container mx-auto mt-4">
-    <h2 class="text-3xl font-bold mb-4">Обмін книгами</h2>
-
-    <div class="flex overflow-x-auto scrollbar-hide">
-        <div th:each="book : ${books}" class="flex-shrink-0 w-full md:w-1/3 px-4 mb-4">
-            <div class="bg-white shadow-md rounded-lg">
-                <div class="p-4">
-                    <h5 class="text-lg font-bold mb-2" th:text="${book.title}"></h5>
-                    <p class="text-gray-600" th:text="${book.author}"></p>
-                </div>
+    <div class="bg-white">
+        <div class="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pb-8">Останні додані книги</h2>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                <a href="#" th:each="book : ${books}" class="group">
+                    <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Makovej%2BFranko.jpg" alt="" class="h-full w-full object-cover object-center group-hover:opacity-75">
+                    </div>
+                    <h3 class="mt-4 text-sm text-gray-700" th:text="${book.author}"></h3>
+                    <p class="mt-1 text-lg font-medium text-gray-900" th:text="${book.title}"></p>
+                </a>
+            </div>
+        </div>
+        <div class="mx-auto max-w-7xl px-6 pb-4 lg:px-8">
+            <div class="mx-auto max-w-2xl lg:mx-0">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Як це працює?</h2>
+                <p class="mt-2 text-lg leading-8 text-gray-600">Три прості кроки, щоб обміняти книгу.</p>
+            </div>
+            <div class="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t-4 border-gray-200 py-2 sm:mt-8 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                <article class="flex max-w-xl flex-col items-start justify-between">
+                    <div class="group relative">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                            <span class="absolute inset-0"></span>
+                            Крок 1. Додайте свою книгу
+                        </h3>
+                        <p class="mt-5 text-sm leading-6 text-gray-600">Щоб додати книгу, натисніть кнопку "Додати книгу" та заповніть форму з інформацією про книгу: назва, автор, опис, жанр, стан тощо.</p>
+                    </div>
+                </article>
+                <article class="flex max-w-xl flex-col items-start justify-between">
+                    <div class="group relative">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                            <span class="absolute inset-0"></span>
+                            Крок 2. Знайдіть книгу для обміну
+                        </h3>
+                        <p class="mt-5 text-sm leading-6 text-gray-600">Ви можете переглядати список книг, доступних для обміну, за допомогою категорій, жанрів, ключових слів або просто прокручуючи список. Ви також можете використовувати фільтри, щоб звузити результати пошуку.</p>
+                    </div>
+                </article>
+                <article class="flex max-w-xl flex-col items-start justify-between">
+                    <div class="group relative">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                            <span class="absolute inset-0"></span>
+                            Крок 3. Зв'яжіться з власником книги
+                        </h3>
+                        <p class="mt-5 text-sm leading-6 text-gray-600">Коли ви знайдете книгу, яка вас зацікавила, ви можете надіслати повідомлення власнику книги, щоб домовитися про обмін. У повідомленні ви можете розповісти про те, яку книгу ви хочете запропонувати натомість, коли і де ви хочете зустрітися.</p>
+                    </div>
+                </article>
             </div>
         </div>
     </div>
-</div>
 
-<footer class="bg-dark text-white text-center py-3">
-    <p>&copy; 2024 papershare.rest</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

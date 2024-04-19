@@ -38,7 +38,7 @@ public class BookController {
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);
 
-        return "books";
+        return "book/books";
     }
 
     @GetMapping("/view/{id}")
@@ -48,12 +48,12 @@ public class BookController {
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("book", book);
 
-        return "book_view";
+        return "book/book_view";
     }
 
     @GetMapping("/create")
     public String getCreate(Model model) {
 
-        return "book_create";
+        return "book/book_create";
     }
 }

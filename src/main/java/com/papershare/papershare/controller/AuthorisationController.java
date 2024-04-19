@@ -24,7 +24,7 @@ public class AuthorisationController {
 
     @GetMapping("/sign_up")
     public String sign_up_get(Model model, @ModelAttribute("user") User user) {
-        return "sign_up";
+        return "authentication/sign_up";
     }
 
     @PostMapping("/sign_up")
@@ -40,12 +40,12 @@ public class AuthorisationController {
 
     @GetMapping("/sign_in")
     public String login_get(Model model, @ModelAttribute("user") User user) {
-        return "sign_in";
+        return "authentication/sign_in";
     }
 
     @RequestMapping("/log_out")
     public String logout() {
-        return "log_out";
+        return "authentication/log_out";
     }
 
 }

@@ -5,4 +5,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExchangeRequestServiceImpl implements ExchangeRequestService {
+    @Override
+    public int getCountOfAllExchangeRequests() {
+        return 0;
+    }
 }

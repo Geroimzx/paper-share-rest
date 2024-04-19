@@ -23,7 +23,6 @@ public class Book {
     @Column(length = 500)
     private String description;
 
-    @Column(unique = true)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)

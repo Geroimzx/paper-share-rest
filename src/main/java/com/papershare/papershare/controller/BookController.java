@@ -1,16 +1,18 @@
 package com.papershare.papershare.controller;
 
 import com.papershare.papershare.model.Book;
+import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.BookService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/book")
@@ -52,8 +54,32 @@ public class BookController {
     }
 
     @GetMapping("/create")
-    public String getCreate(Model model) {
+    public String getCreate(Model model, @ModelAttribute("book") Book book) {
 
         return "book/book_create";
+    }
+
+    @PostMapping
+    public String postCreate(Model model, @ModelAttribute("book") Book book) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
+
+        if(user.isPresent()) {
+
+            book.setAvailable(true);
+
+            book.setOwner(user.get());
+
+            Book createdBook = bookService.createBook(book);
+
+            if(createdBook != null) {
+                Long id = createdBook.getId();
+
+                return "redirect:/book/view/{id}";
+            }
+            return "redirect:/book/create?error=\"create_problem\"";
+        }
+        return "redirect:/book/create?error=\"auth_problem\"";
     }
 }

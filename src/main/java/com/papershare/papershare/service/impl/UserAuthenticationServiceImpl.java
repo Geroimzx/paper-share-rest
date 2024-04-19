@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AuthenticationServiceImpl implements UserAuthenticationService {
+public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
     private UserRepository userRepository;
 
     private PasswordEncoder passwordEncoder;
 
-    public AuthenticationServiceImpl() {
+    public UserAuthenticationServiceImpl() {
     }
 
     @Autowired

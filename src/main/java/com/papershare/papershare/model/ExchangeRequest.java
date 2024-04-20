@@ -3,7 +3,7 @@ package com.papershare.papershare.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "exchange_request")
+@Table(name = "exchange_requests")
 public class ExchangeRequest {
 
     @Id

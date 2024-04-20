@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "optimal-waters-420411",
+  "private_key_id": "2f4e7e33bf70b44000023a024cb690a7689de0b1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuWlzjqZ0zKDBD\nVUoVB9uucaLfBn3iSgN7VeVrxNl8ScNh0IQBdiZHLfyCX7rXIQjjUqQfVo6DxrJn\noQiDLMS43yqaxbi36XpP5d/rPubpcn7avw4nNZfBOg4OcIb8KpRVpQLnsK5CUWfy\n6WdUHfmQdY69DtTrOucpytNSrNGqkXkDPQTuCb1/PUAUg+D7Pl+vu+bT/wI5eRAZ\nzzc3agYHD+vtQ4ZNG3zClmcZ3svmuDLAGi0vg7cH97F6HZp4z1/bH1AzU7968PeA\nuxUJMT+8KMs9o+jg3NNvWKHQ/twcLFuQPemD7iUBI+ccJgU7O2CIeekaO47xMhc4\n6Wr/+l+RAgMBAAECggEALFybk+WdNN394bP6xH0aXTlWqo55SzFvz1rco94TRDd0\nehfW7pRESwodXILFBGXIYCav0bVxT4An9owXoWCrsSo/KeAzDsBeOaQQpEd981oJ\ngtjn3fwZ37VIzE2/WrvuwBfbNF5VCFS0MS9H9jQmQqZWqi3y6OM03AJaYIfOVSp/\nuOqJVHk1UMiIqzHN3r11jg7SaMn4GvlLtP6H5q22/ZUWM6PJzDCKPWP9nfMn3xm8\nhHX78/zgj/JDqsFE3y0WSFbi3Kw8P39iu3wPuSxcDGrqEd2mRgcto+1NbOsO6YmD\nTfSnusn0AY/B9xkOo7lnWyB/pxdxEeuv3N0jUCaX7QKBgQD1hbuAVwQJgQZpKjsc\nJ9sDzsL60h4XQoldKPq+F6YExpaucp3AWRdKRDHrqT24vgJmnm1/dNEj7IwptRvf\nElXVtNGojT2delf1YfGthw/FsObQuPTjz8G106yz9rdnLm5YoPcVYOLtaiBj+gta\nIINJVjLiru9Y69lw+pvcP4dZTwKBgQC1yx+Q+qaNeWNikGeMnM44zl/5kcUlqEuq\nEAmf3sEjmxTyXUdZiREh9dhsPfhTKK96ZIqi3DrJkIPO7WJlX9fbdt6njE7z9v4l\nVynj90xl/0yAt2GgaBXS/oK/r1DezfTWSG2g+eOcfil0gTI1IAfEl75BLcOecRuk\ngAa4Ix7BHwKBgQCsfd8ERJ3+e1pgqh3LIykY3LtZciNX3hQZkj/PK1glBMw6FSZF\nS5I0SAL2ePl3AG85X1a4c/63CWpTpvzE1OHe+WFO1KQULi77o2siqb/n+OfAfiD2\nqDCEqQktikjBwfoeZEATEfV8LNJCyxoMoMj7zgaEAbkANPqYCElWDH/vuwKBgEe+\nig6lXOWoaliTtMoBeEFi8O2FYdCiwnmzKpk1R/PNWE7uESJ8vY4xf9/39PCcteQP\nmcb8MxcpOVuIw7RORtoN54EoFmChsVr7M0UMa9I1FvQVaynq6fIDD4amobvMfDu1\nCc7lz7YK9EFOW4orweUMHcGLVhBJgydAf2ZcNd7xAoGAajYqjXDSe7bQjsqdOG5z\nWGqWP8jhNrflx2qUpCSht5JJcmWSvjSRS1Yy9q6okc/p38wCEOhKcV0p0gesyxFs\nPxnIWLTYtUlWCWIYZVfEXrl0C/lkW9auXWWGy0bXhPr5qGCzhflEimFPepSOaHYu\nWe7bmhw6FBYaUU6E2o0AnOM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "spring-boot-cloud-storage@optimal-waters-420411.iam.gserviceaccount.com",
+  "client_id": "107965652781471364344",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/spring-boot-cloud-storage%40optimal-waters-420411.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

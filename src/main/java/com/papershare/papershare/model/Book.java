@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
 
     @Id
@@ -18,11 +18,28 @@ public class Book {
     @Column(nullable = false)
     private String author;
 
+    @Column(nullable = false)
+    private String publisher;
+
+    @Column(nullable = false)
+    private int numberOfPages;
+
+    @Column(nullable = false)
     private String genre;
 
-    @Column(length = 500)
+    @Column(length = 2000)
     private String description;
 
+    @Column(nullable = false)
+    private String coverType;
+
+    @Column(nullable = false)
+    private String language;
+
+    @Column(nullable = false)
+    private String publicationYear;
+
+    @Column(nullable = false)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +49,7 @@ public class Book {
     @Column(nullable = false)
     private boolean available;
 
-    private String image;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "requestedBook")
     private List<ExchangeRequest> requests;
@@ -61,6 +78,22 @@ public class Book {
         this.author = author;
     }
 
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public int getNumberOfPages() {
+        return numberOfPages;
+    }
+
+    public void setNumberOfPages(int numberOfPages) {
+        this.numberOfPages = numberOfPages;
+    }
+
     public String getGenre() {
         return genre;
     }
@@ -75,6 +108,30 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCoverType() {
+        return coverType;
+    }
+
+    public void setCoverType(String coverType) {
+        this.coverType = coverType;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getPublicationYear() {
+        return publicationYear;
+    }
+
+    public void setPublicationYear(String publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
     public String getIsbn() {
@@ -101,12 +158,12 @@ public class Book {
         this.available = available;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public List<ExchangeRequest> getRequests() {

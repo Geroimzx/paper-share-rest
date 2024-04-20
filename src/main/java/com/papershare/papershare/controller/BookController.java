@@ -1,8 +1,12 @@
 package com.papershare.papershare.controller;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
 import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.BookService;
+import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,9 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.ContentTypeUtils;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/book")
@@ -21,6 +30,8 @@ public class BookController {
     private UserAuthenticationService userAuthenticationService;
 
     private BookService bookService;
+
+    private ImageUploadService imageUploadService;
 
     @Autowired
     public void setUserAuthenticationService(UserAuthenticationService userAuthenticationService) {
@@ -32,8 +43,13 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @Autowired
+    public void setImageUploadService(ImageUploadService imageUploadService) {
+        this.imageUploadService = imageUploadService;
+    }
+
     @GetMapping("/view/all")
-    public String getAllBooks(Model model) {
+    public String getAllBooks(Model model) throws IOException {
         // Отримання списку книг з бази даних
         List<Book> books = bookService.getAllBooks();
 
@@ -44,7 +60,7 @@ public class BookController {
     }
 
     @GetMapping("/view/{id}")
-    public String getBook(@PathVariable Long id, Model model) {
+    public String getBook(@PathVariable Long id, Model model) throws IOException {
         Book book = bookService.getBookById(id);
 
         // Передача списку книг на сторінку через Thymeleaf
@@ -59,8 +75,8 @@ public class BookController {
         return "book/book_create";
     }
 
-    @PostMapping
-    public String postCreate(Model model, @ModelAttribute("book") Book book) {
+    @PostMapping("/create")
+    public String postCreate(Model model, @ModelAttribute("book") Book book, @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
@@ -71,12 +87,18 @@ public class BookController {
 
             book.setOwner(user.get());
 
+            if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                String imageUrl = imageUploadService.uploadImage(uploadedImage);
+
+                book.setImageUrl(imageUrl);
+            }
+
             Book createdBook = bookService.createBook(book);
 
             if(createdBook != null) {
                 Long id = createdBook.getId();
 
-                return "redirect:/book/view/{id}";
+                return "redirect:/book/view/" + id;
             }
             return "redirect:/book/create?error=\"create_problem\"";
         }

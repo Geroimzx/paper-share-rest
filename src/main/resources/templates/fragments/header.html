@@ -34,6 +34,7 @@
                             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                             <a th:href="@{/}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Головна</a>
                             <a th:href="@{/book/view/all}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Книги</a>
+                            <a sec:authorize="isAuthenticated()" th:href="@{/book/create}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Додати книгу</a>
                             <a th:href="@{/about}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Про сайт</a>
                         </div>
                     </div>
@@ -90,6 +91,7 @@
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <a th:href="@{/}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Головна</a>
                 <a th:href="@{/book/view/all}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Книги</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/book/create}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Додати книгу</a>
                 <a th:href="@{/about}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Про сайт</a>
             </div>
         </div>

@@ -13,11 +13,7 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    public Book save(Book book);
-
     public Optional<Book> findById(Long id);
-
-    public void delete(Book book);
 
     public List<Book> findAll();
 

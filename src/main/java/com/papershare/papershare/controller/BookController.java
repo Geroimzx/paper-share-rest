@@ -1,8 +1,5 @@
 package com.papershare.papershare.controller;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
 import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.BookService;
@@ -15,13 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.ContentTypeUtils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/book")

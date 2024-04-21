@@ -66,7 +66,6 @@ public class BookController {
 
     @GetMapping("/create")
     public String getCreate(Model model, @ModelAttribute("book") Book book) {
-
         return "book/book_create";
     }
 

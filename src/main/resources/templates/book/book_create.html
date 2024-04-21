@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Додати книгу - PaperShare</title>
     <div th:replace="~{fragments/links}"></div>
 </head>
@@ -75,14 +74,58 @@
                         <div class="sm:col-span-3">
                             <label th:for="language" class="block text-sm font-medium leading-6 text-gray-900">Мова</label>
                             <div class="mt-2">
-                                <input type="text" th:field="*{language}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <select th:field="*{language}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                    <option value="Українська" selected>Українська</option>
+                                    <option value="Англійська">Англійська</option>
+                                    <option value="Французька">Французька</option>
+                                    <option value="Німецька">Німецька</option>
+                                    <option value="Іспанська">Іспанська</option>
+                                    <option value="Португальська">Португальська</option>
+                                    <option value="Італійська">Італійська</option>
+                                    <option value="Польська">Польська</option>
+                                    <option value="Чеська">Чеська</option>
+                                    <option value="Словацька">Словацька</option>
+                                    <option value="Угорська">Угорська</option>
+                                    <option value="Румунська">Румунська</option>
+                                    <option value="Болгарська">Болгарська</option>
+                                    <option value="Сербська">Сербська</option>
+                                    <option value="Хорватська">Хорватська</option>
+                                    <option value="Македонська">Македонська</option>
+                                    <option value="Словенська">Словенська</option>
+                                    <option value="Голландська">Голландська</option>
+                                    <option value="Данська">Данська</option>
+                                    <option value="Шведська">Шведська</option>
+                                    <option value="Норвезька">Норвезька</option>
+                                    <option value="Фінська">Фінська</option>
+                                    <option value="Естонська">Естонська</option>
+                                    <option value="Литовська">Литовська</option>
+                                    <option value="Латвійська">Латвійська</option>
+                                    <option value="Грецька">Грецька</option>
+                                    <option value="Білоруська">Білоруська</option>
+                                    <option value="Вірменська">Вірменська</option>
+                                    <option value="Грузинська">Грузинська</option>
+                                    <option value="Азербайджанська">Азербайджанська</option>
+                                    <option value="Японська">Японська</option>
+                                    <option value="Корейська">Корейська</option>
+                                    <option value="Китайська (спрощена)">Китайська (спрощена)</option>
+                                    <option value="Китайська (традиційна)">Китайська (традиційна)</option>
+                                    <option value="Арабська">Арабська</option>
+                                    <option value="Іврит">Іврит</option>
+                                    <option value="Гінді">Гінді</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label th:for="coverType" class="block text-sm font-medium leading-6 text-gray-900">Тип обкладинки</label>
                             <div class="mt-2">
-                                <input type="text" th:field="*{coverType}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <select th:field="*{coverType}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                    <option value="Тверда" selected>Тверда</option>
+                                    <option value="М'яка">М'яка</option>
+                                    <option value="М'яка і суперобкладинка">М'яка і суперобкладинка</option>
+                                    <option value="Тверда і суперобкладинка">Тверда і суперобкладинка</option>
+                                    <option value="Інша">Інша</option>
+                                </select>
                             </div>
                         </div>
 
@@ -108,11 +151,41 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <label th:for="genre" class="block text-sm font-medium leading-6 text-gray-900">Жанри</label>
+                            <label th:for="genre" class="block text-sm font-medium leading-6 text-gray-900">Жанри (при виборі декількох зажимайте Ctrl)</label>
                             <div class="mt-2">
-                                <select th:field="*{genre}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                                    <option value="Detective">Detective</option>
-                                    <option value="Horror">Horror</option>
+                                <select multiple th:field="*{genre}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                    <option value="Біографія">Біографія</option>
+                                    <option value="Бойовик">Бойовик</option>
+                                    <option value="Вестерн">Вестерн</option>
+                                    <option value="Вірші">Вірші</option>
+                                    <option value="Воєнна проза">Воєнна проза</option>
+                                    <option value="Детектив">Детектив</option>
+                                    <option value="Дитяча література">Дитяча література</option>
+                                    <option value="Драма">Драма</option>
+                                    <option value="Еротика">Еротика</option>
+                                    <option value="Фантастика">Фантастика</option>
+                                    <option value="Фентезі">Фентезі</option>
+                                    <option value="Історичний роман">Історичний роман</option>
+                                    <option value="Комедія">Комедія</option>
+                                    <option value="Критика">Критика</option>
+                                    <option value="Магічний реалізм">Магічний реалізм</option>
+                                    <option value="Мемуари">Мемуари</option>
+                                    <option value="Містика">Містика</option>
+                                    <option value="Наукова фантастика">Наукова фантастика</option>
+                                    <option value="Поезія">Поезія</option>
+                                    <option value="Пригоди">Пригоди</option>
+                                    <option value="Психологічна проза">Психологічна проза</option>
+                                    <option value="Релігія">Релігія</option>
+                                    <option value="Роман">Роман</option>
+                                    <option value="Саморозвиток">Саморозвиток</option>
+                                    <option value="Казка">Казка</option>
+                                    <option value="Схоластика">Схоластика</option>
+                                    <option value="Соціально-політична проза">Соціально-політична проза</option>
+                                    <option value="Трилер">Трилер</option>
+                                    <option value="Жахи">Жахи</option>
+                                    <option value="Фантастика">Фантастика</option>
+                                    <option value="Фентезі">Фентезі</option>
+                                    <option value="Хроніка">Хроніка</option>
                                 </select>
                             </div>
                         </div>
@@ -121,7 +194,7 @@
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
-                <button type="button" class="text-sm font-semibold leading-6 text-gray-900" th:href="@{/}">Скасувати</button>
+                <a class="text-sm font-semibold leading-6 text-gray-900" th:href="@{/}">Скасувати</a>
                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Зберегти</button>
             </div>
         </form>

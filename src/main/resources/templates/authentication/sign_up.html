@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Реєстрація - PaperShare</title>
     <div th:replace="~{fragments/links}"></div>
 </head>
@@ -11,7 +10,7 @@
 
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto h-10 w-auto" th:src="@{/images/papershare-high-resolution-logo-transparent.png}" alt="PaperShare">
+            <img class="mx-auto h-10 w-auto" src="https://storage.googleapis.com/paper-share-images/papershare-high-resolution-logo-transparent.png" alt="PaperShare">
             <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Зареєструйтесь</h2>
             <p th:if="${param.error}">
                 <span class="text-start text-red-500">Помилка: ім'я користувача зайнято</span>

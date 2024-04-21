@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Книги - PaperShare</title>
     <div th:replace="~{fragments/links}"></div>
 </head>
@@ -123,7 +122,7 @@
                                 <h3 class="-mx-2 -my-3 flow-root">
                                     <!-- Expand/collapse section button -->
                                     <button type="button" class="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500" aria-controls="filter-section-mobile-1" aria-expanded="false">
-                                        <span class="font-medium text-gray-900">Category</span>
+                                        <span class="font-medium text-gray-900">Категорії</span>
                                         <span class="ml-6 flex items-center">
                     <!-- Expand icon, show/hide based on section open state. -->
                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -216,13 +215,13 @@
 
             <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                    <h1 class="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900">Книги</h1>
 
                     <div class="flex items-center">
                         <div class="relative inline-block text-left">
                             <div>
                                 <button type="button" class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" id="menu-button" aria-expanded="false" aria-haspopup="true">
-                                    Sort
+                                    Сортування
                                     <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                     </svg>
@@ -246,11 +245,9 @@
 
                                       Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
                                     -->
-                                    <a href="#" class="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Most Popular</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Best Rating</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Newest</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Price: Low to High</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-4">Price: High to Low</a>
+                                    <a href="#" class="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Спочатку найновіші</a>
+                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Спочатку найстаріші</a>
+                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Спочатку з найкращим рейтингом користувача</a>
                                 </div>
                             </div>
                         </div>
@@ -364,7 +361,7 @@
                                     <div class="space-y-4">
                                         <div class="flex items-center">
                                             <input id="filter-category-0" name="category[]" value="new-arrivals" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                            <label for="filter-category-0" class="ml-3 text-sm text-gray-600">New Arrivals</label>
+                                            <label for="filter-category-0" class="ml-3 text-sm text-gray-600">Книги</label>
                                         </div>
                                         <div class="flex items-center">
                                             <input id="filter-category-1" name="category[]" value="sale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
@@ -435,8 +432,14 @@
                         </form>
 
                         <!-- Product grid -->
-                        <div class="lg:col-span-3">
-                            <!-- Your content -->
+                        <div class="lg:col-span-3 grid grid-cols-1 gap-y-10">
+                            <a th:each="book : ${books}" th:href="@{'/book/view/'+${book.id}}" class="group">
+                                <div class="w-40 overflow-hidden rounded-lg bg-gray-200">
+                                    <img th:src="@{${book.imageUrl}}" alt="cover" class="cover-cover group-hover:opacity-75">
+                                </div>
+                                <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${book.author}"></h3>
+                                <p class="mt-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${book.title}"></p>
+                            </a>
                         </div>
                     </div>
                 </section>

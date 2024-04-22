@@ -22,6 +22,8 @@ import java.util.Optional;
 @RequestMapping("/book")
 public class BookController {
 
+    private final String defaultImageCoverUrl = "https://storage.googleapis.com/paper-share-images/default_book_cover.png";
+
     private UserAuthenticationService userAuthenticationService;
 
     private BookService bookService;
@@ -45,6 +47,12 @@ public class BookController {
 
     @GetMapping("/view/all")
     public String getAllBooks(Model model) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
+
+        user.ifPresent(value -> model.addAttribute("user", value));
+
         // Отримання списку книг з бази даних
         List<Book> books = bookService.getAllBooks();
 
@@ -56,6 +64,12 @@ public class BookController {
 
     @GetMapping("/view/{id}")
     public String getBook(@PathVariable Long id, Model model) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
+
+        user.ifPresent(value -> model.addAttribute("user", value));
+
         Book book = bookService.getBookById(id);
 
         // Передача списку книг на сторінку через Thymeleaf
@@ -66,6 +80,12 @@ public class BookController {
 
     @GetMapping("/create")
     public String getCreate(Model model, @ModelAttribute("book") Book book) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
+
+        user.ifPresent(value -> model.addAttribute("user", value));
+
         return "book/book_create";
     }
 
@@ -76,23 +96,33 @@ public class BookController {
         Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
 
         if(user.isPresent()) {
-
             book.setAvailable(true);
 
             book.setOwner(user.get());
 
-            if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
-                String imageUrl = imageUploadService.uploadImage(uploadedImage);
+            if(!book.getTitle().isBlank() && !book.getAuthor().isBlank()
+                    && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
+                    && !book.getCoverType().isBlank() &&  book.getPublicationYear() > 0
+                    &&  book.getNumberOfPages() > 0 && book.getGenre() != null
+                    && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
 
-                book.setImageUrl(imageUrl);
-            }
+                if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                    String imageUrl = imageUploadService.uploadImage(uploadedImage);
 
-            Book createdBook = bookService.createBook(book);
+                    book.setImageUrl(imageUrl);
+                }
 
-            if(createdBook != null) {
-                Long id = createdBook.getId();
+                if(uploadedImage.isEmpty()) {
+                    book.setImageUrl(defaultImageCoverUrl);
+                }
 
-                return "redirect:/book/view/" + id;
+                Book createdBook = bookService.createBook(book);
+
+                if(createdBook != null) {
+                    Long id = createdBook.getId();
+
+                    return "redirect:/book/view/" + id;
+                }
             }
             return "redirect:/book/create?error=\"create_problem\"";
         }

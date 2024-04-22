@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private String username;
 
     @Column(nullable = false)
@@ -24,6 +24,8 @@ public class User {
     private String email;
     private String firstName;
     private String lastName;
+
+    private String imageUrl;
 
     @OneToMany(mappedBy = "owner")
     private Collection<Book> ownedBooks;
@@ -44,13 +46,14 @@ public class User {
         this.email = email;
     }
 
-    public User(Long id, String username, String password, String email, String firstName, String lastName, Collection<Book> ownedBooks, String roles) {
+    public User(Long id, String username, String password, String email, String firstName, String lastName, String imageUrl, Collection<Book> ownedBooks, String roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.imageUrl = imageUrl;
         this.ownedBooks = ownedBooks;
         this.roles = roles;
     }
@@ -101,6 +104,14 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Collection<Book> getOwnedBooks() {

@@ -1,7 +1,6 @@
 package com.papershare.papershare.service;
 
 import com.papershare.papershare.model.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

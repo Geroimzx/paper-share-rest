@@ -22,7 +22,7 @@ public class Book {
     private String publisher;
 
     @Column(nullable = false)
-    private int numberOfPages;
+    private Integer numberOfPages;
 
     @Column(nullable = false)
     private String genre;
@@ -37,7 +37,7 @@ public class Book {
     private String language;
 
     @Column(nullable = false)
-    private String publicationYear;
+    private Integer publicationYear;
 
     @Column(nullable = false)
     private String isbn;
@@ -47,7 +47,7 @@ public class Book {
     private User owner;
 
     @Column(nullable = false)
-    private boolean available;
+    private Boolean available;
 
     private String imageUrl;
 
@@ -86,11 +86,11 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public int getNumberOfPages() {
+    public Integer getNumberOfPages() {
         return numberOfPages;
     }
 
-    public void setNumberOfPages(int numberOfPages) {
+    public void setNumberOfPages(Integer numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
 
@@ -126,11 +126,11 @@ public class Book {
         this.language = language;
     }
 
-    public String getPublicationYear() {
+    public Integer getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(String publicationYear) {
+    public void setPublicationYear(Integer publicationYear) {
         this.publicationYear = publicationYear;
     }
 
@@ -150,11 +150,11 @@ public class Book {
         this.owner = owner;
     }
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 

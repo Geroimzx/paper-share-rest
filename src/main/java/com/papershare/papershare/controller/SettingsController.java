@@ -1,17 +1,18 @@
 package com.papershare.papershare.controller;
 
 import com.papershare.papershare.model.User;
+import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -20,9 +21,16 @@ public class SettingsController {
 
     private UserAuthenticationService userAuthenticationService;
 
+    private ImageUploadService imageUploadService;
+
     @Autowired
     public void setUserAuthenticationService(UserAuthenticationService userAuthenticationService) {
         this.userAuthenticationService = userAuthenticationService;
+    }
+
+    @Autowired
+    public void setImageUploadService(ImageUploadService imageUploadService) {
+        this.imageUploadService = imageUploadService;
     }
 
     @GetMapping
@@ -40,7 +48,7 @@ public class SettingsController {
     }
 
     @PostMapping
-    public String postSettings(Model model, @ModelAttribute("userData") User userData) {
+    public String postSettings(Model model, @ModelAttribute("userData") User userData, @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Optional<User> authUser = userAuthenticationService.findByUsername(authentication.getName());
@@ -51,8 +59,12 @@ public class SettingsController {
 
                 updatedUser.setEmail(userData.getEmail());
 
-                if(userData.getImageUrl() != null) {
-                    updatedUser.setImageUrl(userData.getImageUrl());
+                if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                    String imageUrl = imageUploadService.uploadImage(uploadedImage);
+
+                    updatedUser.setImageUrl(imageUrl);
+                } else {
+                    return "redirect:/user/settings?error=imageFormatError";
                 }
 
                 updatedUser.setFirstName(userData.getFirstName());

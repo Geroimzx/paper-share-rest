@@ -2,6 +2,7 @@ package com.papershare.papershare.controller;
 
 import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
+import com.papershare.papershare.repository.BookRepository;
 import com.papershare.papershare.service.BookService;
 import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
@@ -80,6 +81,29 @@ public class BookController {
         return "book/book_view";
     }
 
+    @GetMapping("/my")
+    public String getMyBooks(@AuthenticationPrincipal UserDetails userDetails,
+                              Model model) throws IOException {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+
+            user.ifPresent(value -> model.addAttribute("user", value));
+
+            if(user.isPresent()) {
+                // Отримання списку книг користувача з бази даних
+                List<Book> books = (List<Book>) user.get().getOwnedBooks();
+
+                // Передача списку книг на сторінку через Thymeleaf
+                model.addAttribute("books", books);
+
+                return "book/book_user_menu";
+            } else {
+                return "book/book_user_menu?error=userNotPresent";
+            }
+        }
+        return "book/book_user_menu?error=authError";
+    }
+
     @GetMapping("/create")
     public String getCreate(@AuthenticationPrincipal UserDetails userDetails,
                             Model model, @ModelAttribute("book") Book book) {
@@ -133,5 +157,61 @@ public class BookController {
             }
         }
         return "redirect:/book/create?error=\"auth_problem\"";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String getEdit(@AuthenticationPrincipal UserDetails userDetails,
+                            Model model, @PathVariable Long id,
+                          @ModelAttribute("book") Book book) {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+
+            user.ifPresent(value -> model.addAttribute("user", value));
+
+            book = bookService.getBookById(id);
+
+            model.addAttribute("book", book);
+        }
+        return "book/book_edit";
+    }
+
+    @PostMapping("/edit")
+    public String postEdit(@AuthenticationPrincipal UserDetails userDetails, Model model,
+                             @ModelAttribute("book") Book book,
+                             @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+
+            user.ifPresent(value -> model.addAttribute("user", value));
+
+            if(user.isPresent()) {
+                book.setAvailable(true);
+
+                book.setOwner(user.get());
+
+                if(!book.getTitle().isBlank() && !book.getAuthor().isBlank()
+                        && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
+                        && !book.getCoverType().isBlank() &&  book.getPublicationYear() > 0
+                        &&  book.getNumberOfPages() > 0 && book.getGenre() != null
+                        && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
+
+                    if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                        String imageUrl = imageUploadService.uploadImage(uploadedImage);
+
+                        book.setImageUrl(imageUrl);
+                    }
+
+                    Book createdBook = bookService.createBook(book);
+
+                    if(createdBook != null) {
+                        Long id = createdBook.getId();
+
+                        return "redirect:/book/view/" + id;
+                    }
+                }
+                return "redirect:/book/book_edit?error=edit_problem";
+            }
+        }
+        return "redirect:/book/book_edit?error=auth_problem";
     }
 }

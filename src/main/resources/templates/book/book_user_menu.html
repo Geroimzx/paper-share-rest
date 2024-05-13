@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Мої книги - PaperShare</title>
+    <div th:replace="~{fragments/links}"></div>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="bg-white">
+    <div class="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pb-8">Мої книги</h2>
+        <a th:href="@{/book/create}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
+            <span class="mr-2">Додати книгу</span>
+        </a>
+        <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-6">
+            <div th:each="book : ${books}" class="group relative">
+                <a th:href="@{'/book/view/'+${book.id}}" class="group">
+                    <div class="w-72 overflow-hidden rounded-lg bg-gray-200">
+                        <img th:src="@{${book.imageUrl}}" alt="cover" class="cover-cover group-hover:opacity-75">
+                    </div>
+                    <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${book.author}"></h3>
+                    <p class="mt-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${book.title}"></p>
+                </a>
+                <div class="absolute top-0 right-0 flex gap-2 mt-2 mr-2">
+                    <a th:href="@{'/book/edit/'+${book.id}}" class="text-blue-500 hover:text-blue-700 inline-flex items-center p-1 bg-white">
+                        <i class="fas fa-edit text-2xl"></i>
+                    </a>
+                    <a th:href="@{'/book/delete/'+${book.id}}" class="text-red-500 hover:text-red-700 inline-flex items-center p-1 bg-white" onclick="return confirm('Ви впевнені, що хочете видалити цю книгу?');">
+                        <i class="fas fa-trash-alt text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -5,7 +5,9 @@ import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +29,14 @@ public class AuthorisationController {
     }
 
     @GetMapping("/sign_up")
-    public String sign_up_get(Model model, @ModelAttribute("user") User user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String sign_up_get(@AuthenticationPrincipal UserDetails userDetails, Model model, @ModelAttribute("user") User user) {
+       if(userDetails != null) {
+           Optional<User> loggedUser = userAuthenticationService.findByUsername(user.getUsername());
 
-        Optional<User> loggedUser = userAuthenticationService.findByUsername(authentication.getName());
-
-        if(loggedUser.isPresent()) {
-            return "redirect:/";
-        }
-
+           if (loggedUser.isPresent()) {
+               return "redirect:/";
+           }
+       }
         return "authentication/sign_up";
     }
 
@@ -52,15 +53,14 @@ public class AuthorisationController {
     }
 
     @GetMapping("/sign_in")
-    public String login_get(Model model, @ModelAttribute("user") User user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String login_get(@AuthenticationPrincipal UserDetails userDetails, Model model, @ModelAttribute("user") User user) {
+        if(userDetails != null) {
+            Optional<User> loggedUser = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> loggedUser = userAuthenticationService.findByUsername(authentication.getName());
-
-        if(loggedUser.isPresent()) {
-            return "redirect:/";
+            if (loggedUser.isPresent()) {
+                return "redirect:/";
+            }
         }
-
         return "authentication/sign_in";
     }
 

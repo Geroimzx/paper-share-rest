@@ -5,7 +5,9 @@ import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,50 +36,53 @@ public class SettingsController {
     }
 
     @GetMapping
-    public String getSettings(Model model, @ModelAttribute("userData") User userData) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String getSettings(@AuthenticationPrincipal UserDetails userDetails,
+                              Model model, @ModelAttribute("userData") User userData) {
+        if(userDetails != null) {
+            Optional<User> authUser = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> authUser = userAuthenticationService.findByUsername(authentication.getName());
-
-        if(authUser.isPresent()) {
-            model.addAttribute("userData", authUser.get());
-            model.addAttribute("user", authUser.get());
+            if (authUser.isPresent()) {
+                model.addAttribute("userData", authUser.get());
+                model.addAttribute("user", authUser.get());
+            }
+            return "settings/settings";
         }
-
-        return "settings/settings";
+        return "redirect:/user/auth/log_in";
     }
 
     @PostMapping
-    public String postSettings(Model model, @ModelAttribute("userData") User userData, @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String postSettings(@AuthenticationPrincipal UserDetails userDetails, Model model,
+                               @ModelAttribute("userData") User userData,
+                               @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
+        if(userDetails != null) {
+            Optional<User> authUser = userAuthenticationService.findByUsername(userDetails.getUsername());
+            if (!userData.getEmail().isBlank()) {
+                if (authUser.isPresent()) {
+                    User updatedUser = authUser.get();
 
-        Optional<User> authUser = userAuthenticationService.findByUsername(authentication.getName());
+                    updatedUser.setEmail(userData.getEmail());
 
-        if(!userData.getEmail().isBlank()) {
-            if(authUser.isPresent()) {
-                User updatedUser = authUser.get();
+                    if (!uploadedImage.isEmpty()) {
+                        if (Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                            String imageUrl = imageUploadService.uploadImage(uploadedImage);
 
-                updatedUser.setEmail(userData.getEmail());
+                            updatedUser.setImageUrl(imageUrl);
+                        } else {
+                            return "redirect:/user/settings?error=imageFormatError";
+                        }
+                    }
 
-                if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
-                    String imageUrl = imageUploadService.uploadImage(uploadedImage);
+                    updatedUser.setFirstName(userData.getFirstName());
+                    updatedUser.setLastName(userData.getLastName());
 
-                    updatedUser.setImageUrl(imageUrl);
-                } else {
-                    return "redirect:/user/settings?error=imageFormatError";
-                }
+                    updatedUser = userAuthenticationService.updateUser(updatedUser);
 
-                updatedUser.setFirstName(userData.getFirstName());
-                updatedUser.setLastName(userData.getLastName());
-
-                updatedUser = userAuthenticationService.updateUser(updatedUser);
-
-                if(updatedUser != null) {
-                    return "redirect:/user/settings?success=true";
+                    if (updatedUser != null) {
+                        return "redirect:/user/settings?success=true";
+                    }
                 }
             }
         }
-        System.out.println("error update or blank");
         return "redirect:/user/settings?error=saveError";
     }
 }

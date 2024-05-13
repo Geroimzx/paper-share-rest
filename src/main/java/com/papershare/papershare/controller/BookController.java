@@ -7,7 +7,9 @@ import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -46,13 +48,13 @@ public class BookController {
     }
 
     @GetMapping("/view/all")
-    public String getAllBooks(Model model) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String getAllBooks(@AuthenticationPrincipal UserDetails userDetails,
+                              Model model) throws IOException {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
-
-        user.ifPresent(value -> model.addAttribute("user", value));
-
+            user.ifPresent(value -> model.addAttribute("user", value));
+        }
         // Отримання списку книг з бази даних
         List<Book> books = bookService.getAllBooks();
 
@@ -63,13 +65,13 @@ public class BookController {
     }
 
     @GetMapping("/view/{id}")
-    public String getBook(@PathVariable Long id, Model model) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String getBook(@AuthenticationPrincipal UserDetails userDetails,
+                          @PathVariable Long id, Model model) throws IOException {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
-
-        user.ifPresent(value -> model.addAttribute("user", value));
-
+            user.ifPresent(value -> model.addAttribute("user", value));
+        }
         Book book = bookService.getBookById(id);
 
         // Передача списку книг на сторінку через Thymeleaf
@@ -79,52 +81,56 @@ public class BookController {
     }
 
     @GetMapping("/create")
-    public String getCreate(Model model, @ModelAttribute("book") Book book) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String getCreate(@AuthenticationPrincipal UserDetails userDetails,
+                            Model model, @ModelAttribute("book") Book book) {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
-
-        user.ifPresent(value -> model.addAttribute("user", value));
-
+            user.ifPresent(value -> model.addAttribute("user", value));
+        }
         return "book/book_create";
     }
 
     @PostMapping("/create")
-    public String postCreate(Model model, @ModelAttribute("book") Book book, @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String postCreate(@AuthenticationPrincipal UserDetails userDetails, Model model,
+                             @ModelAttribute("book") Book book,
+                             @RequestParam("uploaded-image") MultipartFile uploadedImage) throws IOException {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-        Optional<User> user = userAuthenticationService.findByUsername(authentication.getName());
+            user.ifPresent(value -> model.addAttribute("user", value));
 
-        if(user.isPresent()) {
-            book.setAvailable(true);
+            if(user.isPresent()) {
+                book.setAvailable(true);
 
-            book.setOwner(user.get());
+                book.setOwner(user.get());
 
-            if(!book.getTitle().isBlank() && !book.getAuthor().isBlank()
-                    && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
-                    && !book.getCoverType().isBlank() &&  book.getPublicationYear() > 0
-                    &&  book.getNumberOfPages() > 0 && book.getGenre() != null
-                    && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
+                if(!book.getTitle().isBlank() && !book.getAuthor().isBlank()
+                        && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
+                        && !book.getCoverType().isBlank() &&  book.getPublicationYear() > 0
+                        &&  book.getNumberOfPages() > 0 && book.getGenre() != null
+                        && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
 
-                if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
-                    String imageUrl = imageUploadService.uploadImage(uploadedImage);
+                    if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                        String imageUrl = imageUploadService.uploadImage(uploadedImage);
 
-                    book.setImageUrl(imageUrl);
+                        book.setImageUrl(imageUrl);
+                    }
+
+                    if(uploadedImage.isEmpty()) {
+                        book.setImageUrl(defaultImageCoverUrl);
+                    }
+
+                    Book createdBook = bookService.createBook(book);
+
+                    if(createdBook != null) {
+                        Long id = createdBook.getId();
+
+                        return "redirect:/book/view/" + id;
+                    }
                 }
-
-                if(uploadedImage.isEmpty()) {
-                    book.setImageUrl(defaultImageCoverUrl);
-                }
-
-                Book createdBook = bookService.createBook(book);
-
-                if(createdBook != null) {
-                    Long id = createdBook.getId();
-
-                    return "redirect:/book/view/" + id;
-                }
+                return "redirect:/book/create?error=\"create_problem\"";
             }
-            return "redirect:/book/create?error=\"create_problem\"";
         }
         return "redirect:/book/create?error=\"auth_problem\"";
     }

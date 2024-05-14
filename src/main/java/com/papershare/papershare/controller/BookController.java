@@ -75,10 +75,13 @@ public class BookController {
         }
         Book book = bookService.getBookById(id);
 
-        // Передача списку книг на сторінку через Thymeleaf
-        model.addAttribute("book", book);
+        if(book != null) {
+            // Передача книги на сторінку через Thymeleaf
+            model.addAttribute("book", book);
 
-        return "book/book_view";
+            return "book/book_view";
+        }
+        return "redirect:/?error=bookNotFound&book_id=" + id;
     }
 
     @GetMapping("/my")
@@ -166,13 +169,22 @@ public class BookController {
         if(userDetails != null) {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-            user.ifPresent(value -> model.addAttribute("user", value));
+            if(user.isPresent()) {
+                if(bookService.getBookById(id) != null) {
+                    if (Objects.equals(user.get().getId(), bookService.getBookById(id).getOwner().getId())) {
+                        model.addAttribute("user", user.get());
 
-            book = bookService.getBookById(id);
+                        book = bookService.getBookById(id);
 
-            model.addAttribute("book", book);
+                        model.addAttribute("book", book);
+
+                        return "book/book_edit";
+                    }
+                }
+                return "redirect:/?error=bookNotFound&book_id=" + id;
+            }
         }
-        return "book/book_edit";
+        return "redirect:/book/my?error=auth_problem";
     }
 
     @PostMapping("/edit")
@@ -182,36 +194,69 @@ public class BookController {
         if(userDetails != null) {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
+            if(user.isPresent()) {
+                if(bookService.getBookById(book.getId()) != null) {
+                    if (Objects.equals(user.get().getId(), bookService.getBookById(book.getId()).getOwner().getId())) {
+                        model.addAttribute("user", user.get());
+
+                        book.setAvailable(true);
+
+                        book.setOwner(user.get());
+
+                        if (!book.getTitle().isBlank() && !book.getAuthor().isBlank()
+                                && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
+                                && !book.getCoverType().isBlank() && book.getPublicationYear() > 0
+                                && book.getNumberOfPages() > 0 && book.getGenre() != null
+                                && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
+
+                            if (!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                                String imageUrl = imageUploadService.uploadImage(uploadedImage);
+
+                                book.setImageUrl(imageUrl);
+                            } else {
+                                book.setImageUrl(bookService.getBookById(book.getId()).getImageUrl());
+                            }
+
+                            Book createdBook = bookService.createBook(book);
+
+                            if (createdBook != null) {
+                                Long id = createdBook.getId();
+
+                                return "redirect:/book/view/" + id;
+                            }
+                        }
+                        return "redirect:/book/edit/" + book.getId() + "?error=edit_problem";
+                    }
+                }
+                return "redirect:/?error=bookNotFound&book_id=" + book.getId();
+            }
+        }
+        return "redirect:/book/my?error=auth_problem";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String getDelete(@AuthenticationPrincipal UserDetails userDetails,
+                          Model model, @PathVariable Long id,
+                          @ModelAttribute("book") Book book) {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+
             user.ifPresent(value -> model.addAttribute("user", value));
 
             if(user.isPresent()) {
-                book.setAvailable(true);
+                if(bookService.getBookById(id) != null) {
+                    if (Objects.equals(user.get().getId(), bookService.getBookById(id).getOwner().getId())) {
+                        boolean isDeleted = bookService.deleteBook(id);
 
-                book.setOwner(user.get());
-
-                if(!book.getTitle().isBlank() && !book.getAuthor().isBlank()
-                        && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
-                        && !book.getCoverType().isBlank() &&  book.getPublicationYear() > 0
-                        &&  book.getNumberOfPages() > 0 && book.getGenre() != null
-                        && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
-
-                    if(!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
-                        String imageUrl = imageUploadService.uploadImage(uploadedImage);
-
-                        book.setImageUrl(imageUrl);
-                    }
-
-                    Book createdBook = bookService.createBook(book);
-
-                    if(createdBook != null) {
-                        Long id = createdBook.getId();
-
-                        return "redirect:/book/view/" + id;
+                        if (isDeleted) {
+                            return "redirect:/book/my";
+                        }
+                        return "redirect:/book/my?error=delete_problem";
                     }
                 }
-                return "redirect:/book/book_edit?error=edit_problem";
+                return "redirect:/?error=bookNotFound&book_id=" + id;
             }
         }
-        return "redirect:/book/book_edit?error=auth_problem";
+        return "redirect:/book/my?error=auth_problem";
     }
 }

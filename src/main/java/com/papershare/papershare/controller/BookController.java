@@ -79,6 +79,10 @@ public class BookController {
             // Передача книги на сторінку через Thymeleaf
             model.addAttribute("book", book);
 
+            // Перевірка, чи поточный користувач не є власником книги
+            boolean isOwner = userDetails != null && book.getOwner().getUsername().equals(userDetails.getUsername());
+            model.addAttribute("isNotOwner", !isOwner);
+
             return "book/book_view";
         }
         return "redirect:/?error=bookNotFound&book_id=" + id;

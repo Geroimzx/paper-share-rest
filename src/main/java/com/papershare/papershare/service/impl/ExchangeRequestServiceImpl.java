@@ -14,18 +14,27 @@ public class ExchangeRequestServiceImpl implements ExchangeRequestService {
     @Autowired
     private ExchangeRequestRepository exchangeRequestRepository;
 
+    @Override
     public ExchangeRequest createExchangeRequest(ExchangeRequest exchangeRequest) {
         return exchangeRequestRepository.save(exchangeRequest);
     }
 
+    @Override
     public ExchangeRequest getExchangeRequestById(Long id) {
         return exchangeRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Exchange request not found"));
     }
 
+    @Override
     public List<ExchangeRequest> getAllExchangeRequests() {
         return exchangeRequestRepository.findAll();
     }
 
+    @Override
+    public List<ExchangeRequest> getAllExchangeRequestsByUserId(Long userId) {
+        return exchangeRequestRepository.getAllExchangeRequestsByUserId(userId);
+    }
+
+    @Override
     public ExchangeRequest updateExchangeRequest(Long id, ExchangeRequest exchangeRequest) {
         ExchangeRequest existingRequest = exchangeRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Exchange request not found"));
         existingRequest.setInitiator(exchangeRequest.getInitiator());
@@ -35,6 +44,7 @@ public class ExchangeRequestServiceImpl implements ExchangeRequestService {
         return exchangeRequestRepository.save(existingRequest);
     }
 
+    @Override
     public void deleteExchangeRequest(Long id) {
         exchangeRequestRepository.deleteById(id);
     }

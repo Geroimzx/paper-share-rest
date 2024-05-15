@@ -83,16 +83,16 @@
             <label class="block text-gray-700 text-2xl font-bold mb-2" for="user">Інформація про користувача</label>
             <p class="mt-1 text-lg font-medium text-gray-900" id="user" th:text="${user.username}"></p>
         </div>
-        <div class="mb-6">
+        <!--<div class="mb-6">
             <label class="block text-gray-700 text-2xl font-bold mb-2" for="message">Залишити повідомлення користувачу</label>
             <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="message" name="message" rows="3"></textarea>
-        </div>
-        <div class="flex items-center justify-between">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+        </div>-->
+        <form th:action="@{/exchange/create(requestedBook=${requested_book.id})}" method="post" class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                 Створити обмін
             </button>
-        </div>
+        </form>
     </div>
 </div>
 

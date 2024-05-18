@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Optional;
@@ -31,6 +32,20 @@ public class UserController {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
             user.ifPresent(value -> model.addAttribute("user", value));
+
+            return "user/user";
+        }
+        return "user/user?error=\"auth_problem\"";
+    }
+
+    @GetMapping("/{username}")
+    public String getUserById(@AuthenticationPrincipal UserDetails userDetails, Model model, @PathVariable("username") String username) {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+            Optional<User> userById = userAuthenticationService.findByUsername(username);
+
+            user.ifPresent(value -> model.addAttribute("user", value));
+            userById.ifPresent(value -> model.addAttribute("user_by_id", value));
 
             return "user/user";
         }

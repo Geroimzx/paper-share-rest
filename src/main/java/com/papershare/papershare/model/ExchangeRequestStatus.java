@@ -7,7 +7,6 @@ public enum ExchangeRequestStatus {
     ACCEPTED_BY_INITIATOR,
     DECLINED_BY_INITIATOR,
     CANCELLED,
-    DECLINED,
-    PENDING,
-    SUCCESS
+    SUCCESS,
+    FAILURE
 }

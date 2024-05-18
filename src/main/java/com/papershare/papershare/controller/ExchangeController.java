@@ -4,10 +4,7 @@ import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.ExchangeRequest;
 import com.papershare.papershare.model.ExchangeRequestStatus;
 import com.papershare.papershare.model.User;
-import com.papershare.papershare.service.BookService;
-import com.papershare.papershare.service.ExchangeRequestService;
-import com.papershare.papershare.service.ImageUploadService;
-import com.papershare.papershare.service.UserAuthenticationService;
+import com.papershare.papershare.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -59,7 +56,6 @@ public class ExchangeController {
                 if(!exchangeRequests.isEmpty()) {
                     // Передача обмінів на сторінку через Thymeleaf
                     model.addAttribute("exchange_requests", exchangeRequests);
-                    System.out.println(ExchangeRequestStatus.CREATED.name());
                 }
                 return "exchange/exchange_view";
             }
@@ -114,7 +110,7 @@ public class ExchangeController {
                         exchangeRequest.setInitiator(user.get());
                         exchangeRequest.setStatus(ExchangeRequestStatus.CREATED);
 
-                        ExchangeRequest createdExchangeRequest = exchangeRequestService.createExchangeRequest(exchangeRequest);
+                        ExchangeRequest createdExchangeRequest = exchangeRequestService.save(exchangeRequest);
 
                         return "redirect:/exchange/view";
                     }
@@ -124,5 +120,38 @@ public class ExchangeController {
             }
         }
         return "redirect:/book/view/" + requestedBookId +"?error=authProblem";
+    }
+
+    @GetMapping("/select")
+    public String getSelect(@AuthenticationPrincipal UserDetails userDetails, Model model,
+                            @RequestParam(name = "exchange_id") Long exchange_id) {
+        return "";
+    }
+
+    @PostMapping("/select")
+    public String postSelect() {
+        return "";
+    }
+
+    @GetMapping("/cancel")
+    public String postCancel(@AuthenticationPrincipal UserDetails userDetails, Model model,
+                             @RequestParam(name = "exchange_id") Long exchange_id) {
+        if(userDetails != null) {
+            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
+
+            if(user.isPresent()) {
+                ExchangeRequest exchangeRequest = exchangeRequestService.getExchangeRequestById(exchange_id);
+                if(exchangeRequest != null) {
+                    if(Objects.equals(exchangeRequest.getInitiator().getId(), user.get().getId()) || Objects.equals(exchangeRequest.getRequestedBook().getOwner().getId(), user.get().getId())) {
+                        exchangeRequest.setStatus(ExchangeRequestStatus.CANCELLED);
+                        exchangeRequestService.save(exchangeRequest);
+                        return "redirect:/exchange/view";
+                    }
+                } else {
+                    return "redirect:/?error=exchangeNotFound&exchange_id=" + exchange_id;
+                }
+            }
+        }
+        return "redirect:/?error=authProblem";
     }
 }

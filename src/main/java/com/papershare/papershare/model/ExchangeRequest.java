@@ -1,5 +1,6 @@
 package com.papershare.papershare.model;
 
+import java.time.Instant;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +25,19 @@ public class ExchangeRequest {
 
     @Enumerated(EnumType.STRING)
     private ExchangeRequestStatus status;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant updatedAt;
+
+    public ExchangeRequest() {
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
 
     public Long getId() {
         return id;
@@ -63,5 +77,14 @@ public class ExchangeRequest {
 
     public void setStatus(ExchangeRequestStatus status) {
         this.status = status;
+        this.updatedAt = Instant.now();
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 }

@@ -2,16 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Перегляд деталей обміну - PaperShare</title>
+    <title>Мої обміни - PaperShare</title>
     <div th:replace="~{fragments/links}"></div>
-    <style>
-        .book-cover {
-            width: 50px;
-            height: 75px;
-            object-fit: cover;
-            border: 1px solid #ddd;
-        }
-    </style>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
@@ -19,130 +11,178 @@
 <div class="container mx-auto px-4 py-8">
     <h2 class="text-2xl font-bold mb-4">Запити на обмін</h2>
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2" th:each="exchangeRequest : ${exchange_requests}">
+        <p>Обмін №<span th:text="${exchangeRequest.id}"></span>.
+            Створено
+            <span th:text="${#temporals.format(exchangeRequest.createdAt, 'dd.MM.yyyy HH:mm')}"></span>.
+            Останнє оновлення статусу:
+            <span th:text="${#temporals.format(exchangeRequest.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>.
+        </p>
 
-        <div class="flex flex-col items-center justify-between md:flex-row">
-            <div class="flex flex-col items-center mb-4 md:mb-0 md:mr-4">
-                <span class="rounded-full bg-blue-500 p-2">
-                  <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                    <path d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </span>
-                <span class="font-semibold mt-2 text-center">Створення запиту</span>
-                <span class="text-gray-500 text-xs text-center">Створення запиту на обмін користувачем, який пропонує обмін</span>
-            </div>
-            <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
-            <div class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
-                <p th:text="${exchangeRequest.getStatus().name()}"></p>
-                <span class="rounded-full p-2">
-                    <span th:if="${exchangeRequest.getStatus().name().equals('CREATED')}" class="bg-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    </span>
-                    <span th:if="${exchangeRequest.getStatus().equals('DECLINED_BY_OWNER')}" class="bg-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    </span>
-                    <span th:if="${exchangeRequest.getStatus().equals('DECLINED_BY_OWNER')}" class="bg-blue-500">
-                    <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                      <path d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    </span>
-                </span>
-                <span class="font-semibold mt-2 text-gray-500 text-center">Підтвердження 1</span>
-                <span class="text-gray-500 text-xs text-center">Підтвердження користувачем, якому пропонується обмін, книги, яку би він хотів отримати або скасування обміну</span>
-            </div>
-            <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
-            <div class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
-                <span th:switch="${exchangeRequest.status}" class="rounded-full p-2">
-                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER}" class="bg-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    </span>
-                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_INITIATOR}" class="bg-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    </span>
-                    <span th:case="*" class="bg-blue-500">
-                    <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                      <path d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    </span>
-                </span>
-                <span class="font-semibold mt-2 text-gray-500 text-center">Підтвердження 2</span>
-                <span class="text-gray-500 text-xs text-center">Підтвердження користувачем, який запропонував обмін, книги, яку захотів отримати інший користувач або скасування обміну</span>
-            </div>
-            <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
-            <div class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
-                <span th:switch="${exchangeRequest.status}" class="rounded-full p-2">
-                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}" class="bg-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    </span>
-                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED}" class="bg-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    </span>
-                    <span th:case="*" class="bg-blue-500">
-                    <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                    </svg>
-                    </span>
-                </span>
-                <span class="font-semibold mt-2 text-gray-500 text-center">Здійснення обміну</span>
-                <span class="text-gray-500 text-xs text-center">Проведення обміну користувачами: узгодження доставки та інших деталей обміну</span>
-            </div>
-            <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
-            <div class="flex flex-col items-center md:ml-4">
-                <span class="rounded-full bg-gray-300 p-2">
-                  <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </span>
-                <span class="font-semibold mt-2 text-gray-500 text-center">Підтвердження здійсення обміну</span>
-                <span class="text-gray-500 text-xs text-center">Підтвердження успішного або неуспішного статусу обміну</span>
-            </div>
-        </div>
+        <button onclick="toggleDetails(this)" class="text-blue-500 font-medium hover:underline">
+            Показати деталі
+        </button>
 
-        <ul class="divide-y divide-gray-200">
-                <li class="py-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <img th:if="${exchangeRequest.offeredBook != null && exchangeRequest.offeredBook.imageUrl != null}"
-                                 th:src="${exchangeRequest.offeredBook.imageUrl}"
-                                 alt="Обкладинка книги"
-                                 class="book-cover mr-4">
-                            <div>
-                                <p class="font-medium text-gray-900">
-                                    <span th:text="${exchangeRequest.initiator.username}"></span> пропонує:
-                                    <span th:if="${exchangeRequest.offeredBook != null}"
-                                          th:text="${exchangeRequest.offeredBook.title}"></span>
-                                    <span th:unless="${exchangeRequest.offeredBook != null}">
-                                        <i class="fas fa-question-circle"></i> Не визначено
-                                    </span>
-                                </p>
-                                <div class="flex items-center">
-                                    <p class="text-gray-700">
-                                        В обмін на: <span th:text="${exchangeRequest.requestedBook.title}"></span>
+        <div class="hidden mt-4" id="details">
+            <div th:if="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED}" class="flex flex-col mb-4 items-center justify-between md:flex-row">
+                <div class="flex flex-col items-center mb-4 md:mb-0 md:mr-4">
+                    <span class="rounded-full bg-blue-500 p-2">
+                      <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </span>
+                    <span class="font-semibold mt-2 text-center">Створення запиту</span>
+                    <span class="text-gray-500 text-xs text-center">Створення запиту на обмін користувачем, який пропонує обмін</span>
+                </div>
+                <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
+                <div th:switch="${exchangeRequest.status}" class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).CREATED}" class="rounded-full bg-blue-500 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_OWNER}" class="rounded-full bg-red-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="*" class="rounded-full bg-blue-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </span>
+                    <span class="font-semibold mt-2 text-center">Підтвердження 1</span>
+                    <span class="text-gray-500 text-xs text-center">Підтвердження користувачем, якому пропонується обмін, книги, яку би він хотів отримати або скасування обміну</span>
+                </div>
+                <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
+                <div th:switch="${exchangeRequest.status}" class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER}" class="rounded-full bg-blue-500 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_INITIATOR}" class="rounded-full bg-red-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).CREATED}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_OWNER}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="*" class="rounded-full bg-blue-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </span>
+                    <span class="font-semibold mt-2 text-center">Підтвердження 2</span>
+                    <span class="text-gray-500 text-xs text-center">Підтвердження користувачем, який запропонував обмін, книги, яку захотів отримати інший користувач або скасування обміну</span>
+                </div>
+                <div class="w-full border-t border-gray-300 my-4 md:w-1/5 md:border-t-0 md:border-r md:my-0"></div>
+                <div th:switch="${exchangeRequest.status}" class="flex flex-col items-center mb-4 md:mb-0 md:mx-4">
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}" class="rounded-full bg-blue-500 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS}" class="rounded-full bg-blue-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}" class="rounded-full bg-red-500 p-2">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).CREATED}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_OWNER}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span th:case="${T(com.papershare.papershare.model.ExchangeRequestStatus).DECLINED_BY_INITIATOR}" class="rounded-full bg-gray-300 p-2">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </span>
+                    <span class="font-semibold mt-2 text-center">Здійснення обміну</span>
+                    <span class="text-gray-500 text-xs text-center">Проведення обміну користувачами: узгодження доставки та інших деталей обміну</span>
+                </div>
+            </div>
+
+            <div th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED}">
+                <p>Скасовано</p>
+            </div>
+
+            <ul class="divide-y divide-gray-200">
+                    <li class="py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div>
+                                    <p class="font-medium text-gray-900">
+                                        Користувач
+                                        <a th:href="@{'/user/'+${exchangeRequest.initiator.username}}" class="text-blue-500" th:text="${exchangeRequest.initiator.username}"></a> хоче отримати:
+                                        <a th:href="@{'/book/view/'+${exchangeRequest.requestedBook.id}}" class="text-blue-500" th:text="${exchangeRequest.requestedBook.title}"></a>
                                     </p>
-                                    <img th:if="${exchangeRequest.requestedBook != null && exchangeRequest.requestedBook.imageUrl != null}"
-                                         th:src="${exchangeRequest.requestedBook.imageUrl}"
-                                         alt="Обкладинка книги"
-                                         class="book-cover mr-2">
+                                    <div class="flex items-center">
+                                        <p class="font-medium text-gray-900">
+                                            В обмін на:                                            <span th:if="${exchangeRequest.offeredBook == null}">
+                                            <i class="fas fa-question-circle"></i> Книга не обрана
+                                            </span>
+                                            <a th:if="${exchangeRequest.offeredBook != null}" th:href="@{'/book/view/'+${exchangeRequest.offeredBook.id}}" class="text-blue-500"
+                                                  th:text="${exchangeRequest.offeredBook.title}"></a>
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-col items-start mt-4 space-y-2">
+                                        <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
+                                           th:if="${exchangeRequest.offeredBook == null && exchangeRequest.requestedBook.owner.id == user.id}"
+                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Вибрати книгу
+                                        </a>
+                                        <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
+                                           th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER && exchangeRequest.offeredBook.owner.id == user.id}"
+                                           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Підтвердити обмін
+                                        </a>
+                                        <a th:href="@{'/exchange/cancel?exchange_id='+${exchangeRequest.id}}"
+                                           th:if="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}"
+                                           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Скасувати обмін
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-        </ul>
+                    </li>
+            </ul>
+        </div>
     </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+    function toggleDetails(button) {
+      const detailsDiv = button.nextElementSibling;
+      detailsDiv.classList.toggle('hidden');
+      button.textContent = detailsDiv.classList.contains('hidden') ? 'Показати деталі' : 'Сховати деталі';
+    }
+</script>
 </body>
 </html>

@@ -1,6 +1,10 @@
 package com.papershare.papershare.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -33,6 +37,10 @@ public class ExchangeRequest {
     @Column(name = "updated_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "exchangeRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Message> messages = new ArrayList<>();
 
     public ExchangeRequest() {
         this.createdAt = Instant.now();
@@ -86,5 +94,13 @@ public class ExchangeRequest {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

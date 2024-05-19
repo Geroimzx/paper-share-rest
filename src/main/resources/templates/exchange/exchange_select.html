@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Оберіть книгу - PaperShare</title>
+    <div th:replace="~{fragments/links}"></div>
+    <style>
+        .image-container {
+          width: 300px;
+          height: 400px;
+          overflow: hidden;
+        }
+
+        .image-container img {
+          width: 100%;
+          height: 100%;
+          object-fit: fill; /* This will make the image fill the container while maintaining its aspect ratio */
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="bg-white">
+    <div class="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pb-8">Оберіть книгу для обміну</h2>
+        <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-6">
+            <div th:each="book : ${selection_books}" class="group relative">
+                <a th:href="@{'/book/view/'+${book.id}}" target="_blank" class="group">
+                    <div class="image-container bg-gray-200">
+                        <img th:src="@{${book.imageUrl}}" alt="cover">
+                    </div>
+                    <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${book.author}"></h3>
+                    <p class="mt-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${book.title}"></p>
+                </a>
+                <div class="text-center mt-4">
+                    <a th:href="@{'/exchange/select/confirm?book_id='+${book.id}+'&exchange_id='+${exchange_id}}"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Обрати книгу
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

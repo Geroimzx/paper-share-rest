@@ -125,8 +125,9 @@
                 </div>
             </div>
 
-            <div th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED}">
-                <p>Скасовано</p>
+            <div th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED}"
+                 class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">Обмін книгами було скасовано одним з користувачів.</span>
             </div>
 
             <ul class="divide-y divide-gray-200">
@@ -141,28 +142,32 @@
                                     </p>
                                     <div class="flex items-center">
                                         <p class="font-medium text-gray-900">
-                                            В обмін на:                                            <span th:if="${exchangeRequest.offeredBook == null}">
-                                            <i class="fas fa-question-circle"></i> Книга не обрана
+                                            В обмін на:<span th:if="${exchangeRequest.offeredBook == null}">
+                                                <i class="fas fa-question-circle"></i>Книга не обрана
                                             </span>
                                             <a th:if="${exchangeRequest.offeredBook != null}" th:href="@{'/book/view/'+${exchangeRequest.offeredBook.id}}" class="text-blue-500"
                                                   th:text="${exchangeRequest.offeredBook.title}"></a>
                                         </p>
                                     </div>
-                                    <div class="flex flex-col items-start mt-4 space-y-2">
+                                    <div th:if="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}" class="flex flex-col items-start mt-4 space-y-2">
                                         <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
                                            th:if="${exchangeRequest.offeredBook == null && exchangeRequest.requestedBook.owner.id == user.id}"
                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Вибрати книгу
                                         </a>
-                                        <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
+                                        <a th:href="@{'/exchange/select/confirm?exchange_id='+${exchangeRequest.id}}"
                                            th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER && exchangeRequest.offeredBook.owner.id == user.id}"
                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Підтвердити обмін
                                         </a>
+                                        <a th:href="@{'/exchange/dialogue?exchange_id='+${exchangeRequest.id}}"
+                                           th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Написати повідомлення
+                                        </a>
                                         <a th:href="@{'/exchange/cancel?exchange_id='+${exchangeRequest.id}}"
-                                           th:if="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED
-                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
-                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}"
                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Скасувати обмін
                                         </a>

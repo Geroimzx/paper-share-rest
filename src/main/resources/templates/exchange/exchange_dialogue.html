@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Обмін повідомленнями - PaperShare</title>
+    <div th:replace="~{fragments/links}"></div>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container mx-auto px-4 py-8">
+    <h2 class="mb-4">Обмін повідомленнями: Запит #<span th:text="${exchange_request.id}"></span></h2>
+
+    <div class="flex flex-col h-96 overflow-y-auto">
+        <div id="message-history" class="flex flex-col space-y-4 p-4"></div>
+    </div>
+
+    <div class="input-group mt-4 flex">
+        <input type="number" hidden th:value="${exchange_request.id}" id="exchangeRequestId">
+        <input type="text" class="form-control flex-grow rounded-l border border-gray-300 px-3 py-2" id="newMessage" placeholder="Введіть повідомлення...">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r" type="button" id="sendMessage">Надіслати</button>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const userId = /*[[${user.id}]]*/;
+    /*]]>*/
+    const sendMessageBtn = document.getElementById('sendMessage');
+    const newMessageInput = document.getElementById('newMessage');
+    const exchangeRequestId = document.getElementById('exchangeRequestId').value;
+    const messageHistory = document.getElementById('message-history');
+    var scrolled = false;
+
+    function updateMessageHistory() {
+
+        fetch('/exchange/dialogue/messages/' + exchangeRequestId)
+            .then(response => response.json())
+            .then(messages => {
+                messageHistory.innerHTML = '';
+                messages.forEach(message => {
+                    const messageContainer = document.createElement('div');
+                    messageContainer.classList.add('flex', message.senderId === userId ? 'justify-end' : 'justify-start');
+
+                    const messageBubble = document.createElement('div');
+                    messageBubble.classList.add('p-4', 'rounded-lg', 'max-w-xs', 'md:max-w-md', 'lg:max-w-xl', 'break-words', 'text-slate-100',
+                        message.senderId === userId ? 'bg-blue-500' : 'bg-indigo-500');
+
+                    const messageText = document.createElement('p');
+                    messageText.textContent = message.message;
+
+                    const timestamp = document.createElement('small');
+                    timestamp.classList.add('text-gray-100', 'block', 'text-right');
+                    timestamp.textContent = new Date(message.createdAt).toLocaleString();
+
+                    messageBubble.appendChild(messageText);
+                    messageBubble.appendChild(timestamp);
+                    messageContainer.appendChild(messageBubble);
+
+                    messageHistory.appendChild(messageContainer);
+                });
+                if(!scrolled) {
+                    messageHistory.scrollIntoView({ block: 'end', behavior: 'instant'});
+                    scrolled = true;
+                }
+            })
+            .catch(error => console.error('Помилка при отриманні повідомлень:', error));
+    }
+
+    sendMessageBtn.addEventListener('click', () => {
+        const message = newMessageInput.value.trim();
+        if (message !== "") {
+            fetch('/exchange/dialogue', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    exchangeRequestId: exchangeRequestId,
+                    message: message
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Повідомлення успішно надіслано');
+                        newMessageInput.value = '';
+                        updateMessageHistory();
+                        messageHistory.scrollIntoView({ block: 'end', behavior: 'instant'});
+                    } else if (response.status === 400) {
+                        alert('Повідомлення занадто довге (більше 1000 символів)');
+                    } else {
+                        console.error('Помилка при надсиланні повідомлення');
+                    }
+                })
+                .catch(error => {
+                    console.error('Помилка при надсиланні повідомлення:', error);
+                });
+        }
+    });
+
+    setInterval(updateMessageHistory, 1000);
+
+    updateMessageHistory();
+    messageHistory.scrollTop = messageHistory.scrollHeight;
+</script>
+
+</body>
+</html>

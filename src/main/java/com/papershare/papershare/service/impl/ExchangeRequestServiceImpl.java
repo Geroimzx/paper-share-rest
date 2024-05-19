@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExchangeRequestServiceImpl implements ExchangeRequestService {
@@ -20,8 +21,8 @@ public class ExchangeRequestServiceImpl implements ExchangeRequestService {
     }
 
     @Override
-    public ExchangeRequest getExchangeRequestById(Long id) {
-        return exchangeRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Exchange request not found"));
+    public Optional<ExchangeRequest> getExchangeRequestById(Long id) {
+        return exchangeRequestRepository.findById(id);
     }
 
     @Override

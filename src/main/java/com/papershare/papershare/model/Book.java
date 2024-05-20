@@ -150,7 +150,7 @@ public class Book {
         this.owner = owner;
     }
 
-    public Boolean getAvailable() {
+    public Boolean isAvailable() {
         return available;
     }
 

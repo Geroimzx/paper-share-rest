@@ -75,7 +75,6 @@ public class ExchangeController {
                 Book requestedBook = bookService.getBookById(requestedBookId);
 
                 if(requestedBook != null) {
-                    // Перевірка, чи книга належить користувачу
                     if (requestedBook.getOwner().getId().equals(user.get().getId())) {
                         return "redirect:/?error=ownBookRequest";
                     } else {
@@ -100,7 +99,6 @@ public class ExchangeController {
                 Book requestedBook = bookService.getBookById(requestedBookId);
 
                 if(requestedBook != null) {
-                    // Перевірка, чи книга належить користувачу
                     if (requestedBook.getOwner().getId().equals(user.get().getId())) {
                         return "redirect:/?error=ownBookRequest";
                     } else {
@@ -108,8 +106,7 @@ public class ExchangeController {
                         exchangeRequest.setRequestedBook(requestedBook);
                         exchangeRequest.setInitiator(user.get());
                         exchangeRequest.setStatus(ExchangeRequestStatus.CREATED);
-
-                        ExchangeRequest createdExchangeRequest = exchangeRequestService.save(exchangeRequest);
+                        exchangeRequestService.save(exchangeRequest);
 
                         return "redirect:/exchange/view";
                     }
@@ -130,11 +127,20 @@ public class ExchangeController {
             if (user.isPresent()) {
                 Optional<ExchangeRequest> exchangeRequest = exchangeRequestService.getExchangeRequestById(exchangeId);
                 if (exchangeRequest.isPresent()) {
-                    if(exchangeRequest.get().getStatus() == ExchangeRequestStatus.ACCEPTED_BY_INITIATOR) {
-                        if(Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId()) ||
-                                Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId())) {
+                    if(exchangeRequest.get().getStatus() == ExchangeRequestStatus.ACCEPTED_BY_INITIATOR ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.CANCELLED ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.SUCCESS ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.FAILURE) {
+                        boolean isRequestBookOwner = Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId());
+                        boolean isOfferedBookOwner = Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId());
+                        if(isRequestBookOwner || isOfferedBookOwner) {
+                            if(isRequestBookOwner) {
+                                exchangeRequest.get().setRequestBookOwnerReadMessages(true);
+                            } else {
+                                exchangeRequest.get().setOfferBookOwnerReadMessages(true);
+                            }
                             model.addAttribute("user", user.get());
-                            model.addAttribute("exchange_request", exchangeRequest.get());
+                            model.addAttribute("exchange_request", exchangeRequestService.save(exchangeRequest.get()));
                             return "exchange/exchange_dialogue";
                         }
                     } else {
@@ -159,14 +165,22 @@ public class ExchangeController {
                 Optional<ExchangeRequest> exchangeRequest = exchangeRequestService.getExchangeRequestById(request.getExchangeRequestId());
                 if (exchangeRequest.isPresent()) {
                     if(exchangeRequest.get().getStatus() == ExchangeRequestStatus.ACCEPTED_BY_INITIATOR) {
-                        if(Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId()) ||
-                                Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId())) {
+                        boolean isRequestBookOwner = Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId());
+                        boolean isOfferedBookOwner = Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId());
+                        if(isRequestBookOwner || isOfferedBookOwner) {
                             if(request.getMessage().length() <= 1000) {
                                 Message newMessage = new Message();
                                 newMessage.setSender(user.get());
                                 newMessage.setMessage(request.getMessage());
                                 newMessage.setExchangeRequest(exchangeRequest.get());
                                 exchangeRequest.get().getMessages().add(newMessage);
+                                if(isRequestBookOwner) {
+                                    exchangeRequest.get().setRequestBookOwnerReadMessages(true);
+                                    exchangeRequest.get().setOfferBookOwnerReadMessages(false);
+                                } else {
+                                    exchangeRequest.get().setRequestBookOwnerReadMessages(false);
+                                    exchangeRequest.get().setOfferBookOwnerReadMessages(true);
+                                }
                                 exchangeRequestService.save(exchangeRequest.get());
                                 return new ResponseEntity<>(newMessage, HttpStatus.OK);
                             } else {
@@ -190,9 +204,19 @@ public class ExchangeController {
             if (user.isPresent()) {
                 Optional<ExchangeRequest> exchangeRequest = exchangeRequestService.getExchangeRequestById(exchangeRequestId);
                 if (exchangeRequest.isPresent()) {
-                    if(exchangeRequest.get().getStatus() == ExchangeRequestStatus.ACCEPTED_BY_INITIATOR) {
-                        if(Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId()) ||
-                                Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId())) {
+                    if(exchangeRequest.get().getStatus() == ExchangeRequestStatus.ACCEPTED_BY_INITIATOR ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.CANCELLED ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.SUCCESS ||
+                            exchangeRequest.get().getStatus() == ExchangeRequestStatus.FAILURE) {
+                        boolean isRequestBookOwner = Objects.equals(exchangeRequest.get().getRequestedBook().getOwner().getId(), user.get().getId());
+                        boolean isOfferedBookOwner = Objects.equals(exchangeRequest.get().getInitiator().getId(), user.get().getId());
+                        if(isRequestBookOwner || isOfferedBookOwner) {
+                            if(isRequestBookOwner) {
+                                exchangeRequest.get().setRequestBookOwnerReadMessages(true);
+                            } else {
+                                exchangeRequest.get().setOfferBookOwnerReadMessages(true);
+                            }
+                            exchangeRequestService.save(exchangeRequest.get());
                             return exchangeRequest.get().getMessages().stream().map(message -> new MessageDTO(
                                     message.getId(),
                                     message.getMessage(),

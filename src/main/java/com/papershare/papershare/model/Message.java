@@ -34,7 +34,6 @@ public class Message {
         this.createdAt = Instant.now();
     }
 
-    // Геттери та сеттери
     public Long getId() {
         return id;
     }

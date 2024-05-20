@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping()
@@ -44,7 +45,8 @@ public class HomeController {
         }
 
         // Отримання списку книг з бази даних
-        List<Book> books = bookService.getAllBooks();
+        List<Book> books = bookService.getAllBooks().stream().filter(book -> book.isAvailable().equals(true))
+                .collect(Collectors.toList());
 
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);

@@ -9,14 +9,27 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container mx-auto px-4 py-8">
-    <h2 class="mb-4">Обмін повідомленнями: Запит #<span th:text="${exchange_request.id}"></span></h2>
-
+    <h2 class="mb-4 text-gray-900">Обмін повідомленнями з користувачем
+        <a th:if="${exchange_request.requestedBook.owner.username == user.username}"
+           th:href="@{'/user/'+${exchange_request.offeredBook.owner.username}}" class="text-blue-500"
+           th:text="${exchange_request.offeredBook.owner.username}">
+        </a>
+        <a th:if="${exchange_request.offeredBook.owner.username == user.username}"
+           th:href="@{'/user/'+${exchange_request.requestedBook.owner.username}}" class="text-blue-500"
+           th:text="${exchange_request.requestedBook.owner.username}">
+        </a>
+        щодо обміну №<span id="exchangeRequestId" th:text="${exchange_request.id}"></span>
+        книги
+        "<a th:href="@{'/book/view/'+${exchange_request.requestedBook.id}}" class="text-blue-500" th:text="${exchange_request.requestedBook.title}"></a>"
+        на книгу
+        "<a th:href="@{'/book/view/'+${exchange_request.offeredBook.id}}" class="text-blue-500" th:text="${exchange_request.offeredBook.title}"></a>"
+    </h2>
     <div class="flex flex-col h-96 overflow-y-auto">
         <div id="message-history" class="flex flex-col space-y-4 p-4"></div>
     </div>
 
-    <div class="input-group mt-4 flex">
-        <input type="number" hidden th:value="${exchange_request.id}" id="exchangeRequestId">
+    <div th:if="${exchange_request.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+         class="input-group mt-4 flex">
         <input type="text" class="form-control flex-grow rounded-l border border-gray-300 px-3 py-2" id="newMessage" placeholder="Введіть повідомлення...">
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r" type="button" id="sendMessage">Надіслати</button>
     </div>
@@ -28,13 +41,13 @@
     /*<![CDATA[*/
     const userId = /*[[${user.id}]]*/;
     /*]]>*/
+    const exchangeRequestId = parseInt(document.getElementById('exchangeRequestId').textContent, 10);
+    const messageHistory = document.getElementById('message-history');
+
     const sendMessageBtn = document.getElementById('sendMessage');
     const newMessageInput = document.getElementById('newMessage');
-    const exchangeRequestId = document.getElementById('exchangeRequestId').value;
-    const messageHistory = document.getElementById('message-history');
-    var scrolled = false;
 
-    function updateMessageHistory() {
+    function updateMessageHistory(scroll) {
 
         fetch('/exchange/dialogue/messages/' + exchangeRequestId)
             .then(response => response.json())
@@ -61,49 +74,45 @@
 
                     messageHistory.appendChild(messageContainer);
                 });
-                if(!scrolled) {
+                if(scroll) {
                     messageHistory.scrollIntoView({ block: 'end', behavior: 'instant'});
-                    scrolled = true;
                 }
             })
             .catch(error => console.error('Помилка при отриманні повідомлень:', error));
     }
 
-    sendMessageBtn.addEventListener('click', () => {
-        const message = newMessageInput.value.trim();
-        if (message !== "") {
-            fetch('/exchange/dialogue', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    exchangeRequestId: exchangeRequestId,
-                    message: message
+    if (sendMessageBtn && newMessageInput) {
+        sendMessageBtn.addEventListener('click', () => {
+            const message = newMessageInput.value.trim();
+            if (message !== "") {
+                fetch('/exchange/dialogue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        exchangeRequestId: exchangeRequestId,
+                        message: message
+                    })
                 })
-            })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Повідомлення успішно надіслано');
-                        newMessageInput.value = '';
-                        updateMessageHistory();
-                        messageHistory.scrollIntoView({ block: 'end', behavior: 'instant'});
-                    } else if (response.status === 400) {
-                        alert('Повідомлення занадто довге (більше 1000 символів)');
-                    } else {
-                        console.error('Помилка при надсиланні повідомлення');
-                    }
-                })
-                .catch(error => {
-                    console.error('Помилка при надсиланні повідомлення:', error);
-                });
-        }
-    });
+                    .then(response => {
+                        if (response.ok) {
+                            newMessageInput.value = '';
+                            updateMessageHistory(true);
+                        } else if (response.status === 400) {
+                            alert('Повідомлення занадто довге (більше 1000 символів)');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Помилка при надсиланні повідомлення:', error);
+                    });
+            }
+        });
 
-    setInterval(updateMessageHistory, 1000);
+        setInterval(updateMessageHistory, 1000);
+    }
 
-    updateMessageHistory();
-    messageHistory.scrollTop = messageHistory.scrollHeight;
+    updateMessageHistory(true);
 </script>
 
 </body>

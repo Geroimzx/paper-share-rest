@@ -42,9 +42,17 @@ public class ExchangeRequest {
     @JsonManagedReference
     private List<Message> messages = new ArrayList<>();
 
+    @Column(name = "request_book_owner_read_messages")
+    private boolean requestBookOwnerReadMessages;
+
+    @Column(name = "offer_book_owner_read_messages")
+    private boolean offerBookOwnerReadMessages;
+
     public ExchangeRequest() {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
+        this.requestBookOwnerReadMessages = true;
+        this.offerBookOwnerReadMessages = true;
     }
 
     public Long getId() {
@@ -102,5 +110,21 @@ public class ExchangeRequest {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public boolean isRequestBookOwnerReadMessages() {
+        return requestBookOwnerReadMessages;
+    }
+
+    public void setRequestBookOwnerReadMessages(boolean requestBookOwnerReadMessages) {
+        this.requestBookOwnerReadMessages = requestBookOwnerReadMessages;
+    }
+
+    public boolean isOfferBookOwnerReadMessages() {
+        return offerBookOwnerReadMessages;
+    }
+
+    public void setOfferBookOwnerReadMessages(boolean offerBookOwnerReadMessages) {
+        this.offerBookOwnerReadMessages = offerBookOwnerReadMessages;
     }
 }

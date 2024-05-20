@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/book")
@@ -50,14 +51,56 @@ public class BookController {
 
     @GetMapping("/view/all")
     public String getAllBooks(@AuthenticationPrincipal UserDetails userDetails,
-                              Model model) throws IOException {
+                              Model model,
+                              @RequestParam(required = false) String title,
+                              @RequestParam(required = false) String author,
+                              @RequestParam(required = false) String publisher,
+                              @RequestParam(required = false) String genre,
+                              @RequestParam(required = false) String coverType,
+                              @RequestParam(required = false) String language,
+                              @RequestParam(required = false) Integer publicationYear,
+                              @RequestParam(required = false) String isbn) throws IOException {
         if(userDetails != null) {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
             user.ifPresent(value -> model.addAttribute("user", value));
         }
         // Отримання списку книг з бази даних
-        List<Book> books = bookService.getAllBooks();
+        List<Book> books = bookService.getAllBooks().stream().filter(book -> book.isAvailable().equals(true))
+                .collect(Collectors.toList());
+
+        if(title != null) {
+            books = books.stream().filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(author != null) {
+            books = books.stream().filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(publisher != null) {
+            books = books.stream().filter(book -> book.getPublisher().toLowerCase().contains(publisher.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(genre != null) {
+            books = books.stream().filter(book -> book.getGenre().toLowerCase().contains(genre.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(coverType != null) {
+            books = books.stream().filter(book -> book.getCoverType().toLowerCase().contains(coverType.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(language != null) {
+            books = books.stream().filter(book -> book.getLanguage().toLowerCase().contains(language.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(publicationYear != null) {
+            books = books.stream().filter(book -> book.getPublicationYear().equals(publicationYear))
+                    .collect(Collectors.toList());
+        }
+        if(isbn != null) {
+            books = books.stream().filter(book -> book.getIsbn().toLowerCase().contains(isbn.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
 
         // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);

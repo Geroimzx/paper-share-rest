@@ -11,12 +11,24 @@
 <div class="container mx-auto px-4 py-8">
     <h2 class="text-2xl font-bold mb-4">Запити на обмін</h2>
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2" th:each="exchangeRequest : ${exchange_requests}">
-        <p>Обмін №<span th:text="${exchangeRequest.id}"></span>.
-            Створено
-            <span th:text="${#temporals.format(exchangeRequest.createdAt, 'dd.MM.yyyy HH:mm')}"></span>.
-            Останнє оновлення статусу:
-            <span th:text="${#temporals.format(exchangeRequest.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>.
-        </p>
+        <div>
+            <p>Обмін №<span th:text="${exchangeRequest.id}"></span>.
+                Створено
+                <span th:text="${#temporals.format(exchangeRequest.createdAt, 'dd.MM.yyyy HH:mm')}"></span>.
+                Останнє оновлення статусу:
+                <span th:text="${#temporals.format(exchangeRequest.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>.
+            </p>
+            <div class="mt-2">
+                <span th:if="${exchangeRequest.requestedBook.owner.id == user.id && exchangeRequest.requestBookOwnerReadMessages == false}"
+                      class="font-bold text-red-500 bg-yellow-100 px-2 py-1 rounded-md">
+                        У Вас є непрочитані повідомлення
+                    </span>
+                <span th:if="${exchangeRequest.offeredBook.owner.id == user.id && exchangeRequest.offerBookOwnerReadMessages == false}"
+                      class="font-bold text-red-500 bg-yellow-100 px-2 py-1 rounded-md">
+                        У Вас є непрочитані повідомлення
+                </span>
+            </div>
+        </div>
 
         <button onclick="toggleDetails(this)" class="text-blue-500 font-medium hover:underline">
             Показати деталі
@@ -151,25 +163,50 @@
                                     </div>
                                     <div th:if="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED
                                                   && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
-                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}" class="flex flex-col items-start mt-4 space-y-2">
-                                        <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
-                                           th:if="${exchangeRequest.offeredBook == null && exchangeRequest.requestedBook.owner.id == user.id}"
-                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Вибрати книгу
-                                        </a>
-                                        <a th:href="@{'/exchange/select/confirm?exchange_id='+${exchangeRequest.id}}"
-                                           th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER && exchangeRequest.offeredBook.owner.id == user.id}"
-                                           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Підтвердити обмін
-                                        </a>
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="flex flex-col items-start mt-4 space-y-2">
+                                                <a th:href="@{'/exchange/select?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.offeredBook == null && exchangeRequest.requestedBook.owner.id == user.id}"
+                                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Вибрати книгу
+                                                </a>
+                                                <a th:href="@{'/exchange/select/confirm?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_OWNER && exchangeRequest.offeredBook.owner.id == user.id}"
+                                                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Підтвердити обмін
+                                                </a>
+                                                <a th:href="@{'/exchange/dialogue?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Перейти до повідомлень
+                                                </a>
+                                                <a th:href="@{'/exchange/cancel?exchange_id='+${exchangeRequest.id}}"
+                                                   class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Скасувати обмін
+                                                </a>
+                                            </div>
+                                            <div class="flex flex-col items-start mt-4 space-y-2">
+                                                <a th:href="@{'/exchange/confirm?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                                   class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Підтвердити успішний обмін
+                                                </a>
+                                                <a th:href="@{'/exchange/failure?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                                   class="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Повідомити адміністратора про неуспішний обмін
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
+                                                  && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}"
+                                         class="flex flex-col items-start mt-4 space-y-2">
                                         <a th:href="@{'/exchange/dialogue?exchange_id='+${exchangeRequest.id}}"
-                                           th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
-                                           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Написати повідомлення
-                                        </a>
-                                        <a th:href="@{'/exchange/cancel?exchange_id='+${exchangeRequest.id}}"
-                                           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Скасувати обмін
+                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Перейти до історії повідомлень
                                         </a>
                                     </div>
                                 </div>

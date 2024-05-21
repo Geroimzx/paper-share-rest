@@ -23,7 +23,7 @@
                       class="font-bold text-red-500 bg-yellow-100 px-2 py-1 rounded-md">
                         У Вас є непрочитані повідомлення
                     </span>
-                <span th:if="${exchangeRequest.offeredBook.owner.id == user.id && exchangeRequest.offerBookOwnerReadMessages == false}"
+                <span th:if="${exchangeRequest.offeredBook != null && exchangeRequest.offeredBook.owner.id == user.id && exchangeRequest.offerBookOwnerReadMessages == false}"
                       class="font-bold text-red-500 bg-yellow-100 px-2 py-1 rounded-md">
                         У Вас є непрочитані повідомлення
                 </span>
@@ -204,9 +204,187 @@
                                                   && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS
                                                   && exchangeRequest.status != T(com.papershare.papershare.model.ExchangeRequestStatus).FAILURE}"
                                          class="flex flex-col items-start mt-4 space-y-2">
-                                        <a th:href="@{'/exchange/dialogue?exchange_id='+${exchangeRequest.id}}"
+                                        <a th:if="${exchangeRequest.offeredBook != null}" th:href="@{'/exchange/dialogue?exchange_id='+${exchangeRequest.id}}"
                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Перейти до історії повідомлень
+                                        </a>
+                                        <div th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS &&
+                                                    exchangeRequest.initiator.id == user.id &&
+                                                    exchangeRequest.offerBookOwnerRatedRequestBookOwner == false}">
+                                            <div class="bg-white rounded-lg shadow-md p-4">
+                                                <h2 class="text-lg font-medium text-gray-900">Оцініть користувача з яким Ви провели обмін</h2>
+                                                <form id="ratingForm" th:action="@{'/exchange/rating?exchange_id='+${exchangeRequest.id}}" method="post" class="mt-4">
+                                                    <div class="grid grid-cols-3 gap-4">
+                                                        <div>
+                                                            <label for="informationAccuracy" class="block text-sm font-medium text-gray-700">Достовірність наданої інформації про книгу</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="1" id="informationAccuracy1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="2" id="informationAccuracy2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="3" id="informationAccuracy3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="4" id="informationAccuracy4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="5" id="informationAccuracy5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label for="shippingSpeed" class="block text-sm font-medium text-gray-700">Швидкість відправлення книги</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="1" id="shippingSpeed1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="2" id="shippingSpeed2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="3" id="shippingSpeed3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="4" id="shippingSpeed4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="5" id="shippingSpeed5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label for="overallExperience" class="block text-sm font-medium text-gray-700">Загальний досвід обміну з користувачем</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="1" id="overallExperience1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="2" id="overallExperience2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="3" id="overallExperience3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="4" id="overallExperience4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="5" id="overallExperience5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-6">
+                                                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                            Оцінити
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).SUCCESS &&
+                                                exchangeRequest.requestedBook.owner.id == user.id &&
+                                                exchangeRequest.requestBookOwnerRatedOfferBookOwner == false}">
+                                            <div class="bg-white rounded-lg shadow-md p-4">
+                                                <h2 class="text-lg font-medium text-gray-900">Оцініть користувача з яким Ви провели обмін</h2>
+                                                <form id="ratingForm" th:action="@{'/exchange/rating?exchange_id='+${exchangeRequest.id}}" method="post" class="mt-4">
+                                                    <div class="grid grid-cols-3 gap-4">
+                                                        <div>
+                                                            <label for="informationAccuracy" class="block text-sm font-medium text-gray-700">Достовірність наданої інформації про книгу</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="1" id="informationAccuracy1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="2" id="informationAccuracy2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="3" id="informationAccuracy3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="4" id="informationAccuracy4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="informationAccuracy" value="5" id="informationAccuracy5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label for="shippingSpeed" class="block text-sm font-medium text-gray-700">Швидкість відправлення книги</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="1" id="shippingSpeed1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="2" id="shippingSpeed2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="3" id="shippingSpeed3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="4" id="shippingSpeed4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="shippingSpeed" value="5" id="shippingSpeed5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label for="overallExperience" class="block text-sm font-medium text-gray-700">Загальний досвід обміну з користувачем</label>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="1" id="overallExperience1" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience1" class="ml-2 block text-sm text-gray-900">1 зірка</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="2" id="overallExperience2" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience2" class="ml-2 block text-sm text-gray-900">2 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="3" id="overallExperience3" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience3" class="ml-2 block text-sm text-gray-900">3 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="4" id="overallExperience4" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience4" class="ml-2 block text-sm text-gray-900">4 зірки</label>
+                                                            </div>
+                                                            <div class="mt-1 flex items-center">
+                                                                <input type="radio" name="overallExperience" value="5" id="overallExperience5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-6">
+                                                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                            Оцінити
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <a th:href="@{'/exchange/failure?exchange_id='+${exchangeRequest.id}}"
+                                           th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).CANCELLED &&
+                                                    exchangeRequest.offeredBook != null && exchangeRequest.requestedBook != null}"
+                                           class="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Повідомити адміністратора про неуспішний обмін
                                         </a>
                                     </div>
                                 </div>

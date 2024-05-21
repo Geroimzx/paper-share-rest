@@ -35,7 +35,7 @@ public class UserController {
 
             return "user/user";
         }
-        return "user/user?error=\"auth_problem\"";
+        return "error/400";
     }
 
     @GetMapping("/{username}")
@@ -49,6 +49,6 @@ public class UserController {
 
             return "user/user";
         }
-        return "user/user?error=\"auth_problem\"";
+        return "error/400";
     }
 }

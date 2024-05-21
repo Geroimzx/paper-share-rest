@@ -47,7 +47,7 @@ public class SettingsController {
             }
             return "settings/settings";
         }
-        return "redirect:/user/auth/log_in";
+        return "error/401";
     }
 
     @PostMapping
@@ -68,7 +68,7 @@ public class SettingsController {
 
                             updatedUser.setImageUrl(imageUrl);
                         } else {
-                            return "redirect:/user/settings?error=imageFormatError";
+                            return "error/400";
                         }
                     }
 
@@ -78,11 +78,13 @@ public class SettingsController {
                     updatedUser = userAuthenticationService.updateUser(updatedUser);
 
                     if (updatedUser != null) {
-                        return "redirect:/user/settings?success=true";
+                        return "redirect:/user/settings";
+                    } else {
+                        return "error/400";
                     }
                 }
             }
         }
-        return "redirect:/user/settings?error=saveError";
+        return "error/401";
     }
 }

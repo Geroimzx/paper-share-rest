@@ -128,26 +128,11 @@
                                     </svg>
                                 </button>
                             </div>
-                            <!--
-                              Dropdown menu, show/hide based on menu state.
-
-                              Entering: "transition ease-out duration-100"
-                                From: "transform opacity-0 scale-95"
-                                To: "transform opacity-100 scale-100"
-                              Leaving: "transition ease-in duration-75"
-                                From: "transform opacity-100 scale-100"
-                                To: "transform opacity-0 scale-95"
-                            -->
-                            <div class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" id="dropdown-menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                                 <div class="py-1" role="none">
-                                    <!--
-                                      Active: "bg-gray-100", Not Active: ""
-
-                                      Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
-                                    -->
-                                    <a href="#" class="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Спочатку найновіші</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Спочатку найстаріші</a>
-                                    <a href="#" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Спочатку з найкращим рейтингом користувача</a>
+                                    <button type="button" class="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Спочатку найновіші</button>
+                                    <button type="button" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Спочатку найстаріші</button>
+                                    <button type="button" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Спочатку з найкращим рейтингом користувача</button>
                                 </div>
                             </div>
                         </div>
@@ -251,13 +236,18 @@
                         </form>
 
                         <div class="lg:col-span-2 grid-cols-1 gap-y-2">
-                            <a th:each="book : ${books}" th:href="@{'/book/view/'+${book.id}}" class="group">
-                                <div class="w-40 overflow-hidden rounded-lg bg-gray-200">
-                                    <img th:src="@{${book.imageUrl}}" alt="cover" class="cover-cover group-hover:opacity-75">
-                                </div>
-                                <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${book.author}"></h3>
-                                <p class="mt-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${book.title}"></p>
-                            </a>
+                            <div th:each="book : ${books}" class="group outline outline-1 px-4 py-4 rounded outline-gray-200 flex">
+                                <a th:href="@{'/book/view/'+${book.id}}" class="flex">
+                                    <div class="w-40 overflow-hidden rounded-lg bg-gray-200 shrink-0">
+                                        <img th:src="@{${book.imageUrl}}" alt="cover" class="cover-cover group-hover:opacity-75">
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="mt-1 mb-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${book.title}"></p>
+                                        <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${book.author}"></h3>
+                                        <h4 class="mt-4 text-md text-gray-800 group-hover:opacity-75 line-clamp-6" th:text="${book.description}"></h4>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -271,6 +261,71 @@
         const showFilterButton = document.getElementById('show-filter-button');
         const closeFilterButton = document.getElementById('close-mobile-menu-button');
 
+        const links = document.querySelectorAll('[id^="menu-item-"]');
+        const buttons = document.querySelectorAll('button[role="menuitem"]');
+        const urlParams = new URLSearchParams(window.location.search);
+        const sortType = urlParams.get('sortType');
+
+        const menuButton = document.getElementById('menu-button');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        menuButton.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        buttons.forEach(button => {
+          const buttonSortType = button.textContent.trim();
+
+          // Визначити sortType для кожного button
+          switch (buttonSortType) {
+            case 'Спочатку найновіші':
+              button.dataset.sortType = 'newest';
+              break;
+            case 'Спочатку найстаріші':
+              button.dataset.sortType = 'oldest';
+              break;
+            case 'Спочатку з найкращим рейтингом користувача':
+              button.dataset.sortType = 'rating';
+              break;
+            default:
+              button.dataset.sortType = '';
+          }
+
+          // Застосувати стилі до активного button
+          if (button.dataset.sortType === sortType) {
+            button.classList.add('bg-gray-100', 'font-medium', 'text-gray-900');
+          } else {
+            button.classList.remove('bg-gray-100', 'font-medium', 'text-gray-900');
+            button.classList.add('text-gray-500');
+          }
+        });
+
+        links.forEach(link => {
+          link.addEventListener('click', function() {
+            let sortType = '';
+
+            switch (this.id) {
+              case 'menu-item-0':
+                sortType = 'newest';
+                break;
+              case 'menu-item-2':
+                sortType = 'oldest';
+                break;
+              case 'menu-item-1':
+                sortType = 'rating';
+                break;
+            }
+
+            // Отримуємо поточний URL
+            const currentUrl = new URL(window.location.href);
+
+            // Додаємо або оновлюємо параметр sortType
+            currentUrl.searchParams.set('sortType', sortType);
+
+            // Переходимо на новий URL
+            window.location.href = currentUrl.href;
+          });
+        });
 
         showFilterButton.addEventListener('click', () => {
           mobileFilter.classList.toggle('hidden');

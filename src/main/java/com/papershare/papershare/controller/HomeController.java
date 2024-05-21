@@ -44,11 +44,9 @@ public class HomeController {
             user.ifPresent(value -> model.addAttribute("user", value));
         }
 
-        // Отримання списку книг з бази даних
-        List<Book> books = bookService.getAllBooks().stream().filter(book -> book.isAvailable().equals(true))
+        List<Book> books = bookService.getAllBooks().stream().filter(Book::isAvailable)
                 .collect(Collectors.toList());
 
-        // Передача списку книг на сторінку через Thymeleaf
         model.addAttribute("books", books);
 
         return "index";

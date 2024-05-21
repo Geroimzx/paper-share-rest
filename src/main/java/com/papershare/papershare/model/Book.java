@@ -2,6 +2,7 @@ package com.papershare.papershare.model;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -53,6 +54,14 @@ public class Book {
 
     @OneToMany(mappedBy = "requestedBook")
     private List<ExchangeRequest> requests;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
+    public Book() {
+        createdAt = Instant.now();
+    }
 
     public Long getId() {
         return id;
@@ -172,5 +181,13 @@ public class Book {
 
     public void setRequests(List<ExchangeRequest> requests) {
         this.requests = requests;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -42,11 +42,23 @@ public class ExchangeRequest {
     @JsonManagedReference
     private List<Message> messages = new ArrayList<>();
 
-    @Column(name = "request_book_owner_read_messages")
+    @Column(name = "exchange_confirm_by_request_book_owner", columnDefinition = "boolean default false")
+    private boolean requestBookOwnerConfirm;
+
+    @Column(name = "exchange_confirm_by_offer_book_owner", columnDefinition = "boolean default false")
+    private boolean offerBookOwnerConfirm;
+
+    @Column(name = "request_book_owner_read_messages", columnDefinition = "boolean default true")
     private boolean requestBookOwnerReadMessages;
 
-    @Column(name = "offer_book_owner_read_messages")
+    @Column(name = "offer_book_owner_read_messages", columnDefinition = "boolean default true")
     private boolean offerBookOwnerReadMessages;
+
+    @Column(name = "request_book_owner_rated_offer_book_owner", columnDefinition = "boolean default false")
+    private boolean requestBookOwnerRatedOfferBookOwner;
+
+    @Column(name = "offer_book_owner_rated_request_book_owner", columnDefinition = "boolean default false")
+    private boolean offerBookOwnerRatedRequestBookOwner;
 
     public ExchangeRequest() {
         this.createdAt = Instant.now();
@@ -112,6 +124,22 @@ public class ExchangeRequest {
         this.messages = messages;
     }
 
+    public boolean isRequestBookOwnerConfirm() {
+        return requestBookOwnerConfirm;
+    }
+
+    public void setRequestBookOwnerConfirm(boolean requestBookOwnerConfirm) {
+        this.requestBookOwnerConfirm = requestBookOwnerConfirm;
+    }
+
+    public boolean isOfferBookOwnerConfirm() {
+        return offerBookOwnerConfirm;
+    }
+
+    public void setOfferBookOwnerConfirm(boolean offerBookOwnerConfirm) {
+        this.offerBookOwnerConfirm = offerBookOwnerConfirm;
+    }
+
     public boolean isRequestBookOwnerReadMessages() {
         return requestBookOwnerReadMessages;
     }
@@ -126,5 +154,21 @@ public class ExchangeRequest {
 
     public void setOfferBookOwnerReadMessages(boolean offerBookOwnerReadMessages) {
         this.offerBookOwnerReadMessages = offerBookOwnerReadMessages;
+    }
+
+    public boolean isRequestBookOwnerRatedOfferBookOwner() {
+        return requestBookOwnerRatedOfferBookOwner;
+    }
+
+    public void setRequestBookOwnerRatedOfferBookOwner(boolean requestBookOwnerRatedOfferBookOwner) {
+        this.requestBookOwnerRatedOfferBookOwner = requestBookOwnerRatedOfferBookOwner;
+    }
+
+    public boolean isOfferBookOwnerRatedRequestBookOwner() {
+        return offerBookOwnerRatedRequestBookOwner;
+    }
+
+    public void setOfferBookOwnerRatedRequestBookOwner(boolean offerBookOwnerRatedRequestBookOwner) {
+        this.offerBookOwnerRatedRequestBookOwner = offerBookOwnerRatedRequestBookOwner;
     }
 }

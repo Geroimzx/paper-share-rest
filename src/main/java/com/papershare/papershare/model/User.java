@@ -30,6 +30,18 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private Collection<Book> ownedBooks;
 
+    @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<UserRating> ratedUserRating;
+
+    @OneToMany(mappedBy = "ratee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<UserRating> rateeUserRating;
+
+    private Double averageInformationAccuracy;
+
+    private Double averageShippingSpeed;
+
+    private Double averageOverallExperience;
+
     private String roles;
 
     public User() {
@@ -44,18 +56,6 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-    }
-
-    public User(Long id, String username, String password, String email, String firstName, String lastName, String imageUrl, Collection<Book> ownedBooks, String roles) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.imageUrl = imageUrl;
-        this.ownedBooks = ownedBooks;
-        this.roles = roles;
     }
 
     public Long getId() {
@@ -122,11 +122,51 @@ public class User {
         this.ownedBooks = ownedBooks;
     }
 
+    public Collection<UserRating> getRatedUserRating() {
+        return ratedUserRating;
+    }
+
+    public void setRatedUserRating(Collection<UserRating> ratedUserRating) {
+        this.ratedUserRating = ratedUserRating;
+    }
+
+    public Collection<UserRating> getRateeUserRating() {
+        return rateeUserRating;
+    }
+
+    public void setRateeUserRating(Collection<UserRating> rateeUserRating) {
+        this.rateeUserRating = rateeUserRating;
+    }
+
     public String getRoles() {
         return roles;
     }
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public Double getAverageInformationAccuracy() {
+        return averageInformationAccuracy;
+    }
+
+    public void setAverageInformationAccuracy(Double averageInformationAccuracy) {
+        this.averageInformationAccuracy = averageInformationAccuracy;
+    }
+
+    public Double getAverageShippingSpeed() {
+        return averageShippingSpeed;
+    }
+
+    public void setAverageShippingSpeed(Double averageShippingSpeed) {
+        this.averageShippingSpeed = averageShippingSpeed;
+    }
+
+    public Double getAverageOverallExperience() {
+        return averageOverallExperience;
+    }
+
+    public void setAverageOverallExperience(Double averageOverallExperience) {
+        this.averageOverallExperience = averageOverallExperience;
     }
 }

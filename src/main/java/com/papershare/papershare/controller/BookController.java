@@ -2,14 +2,11 @@ package com.papershare.papershare.controller;
 
 import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
-import com.papershare.papershare.repository.BookRepository;
 import com.papershare.papershare.service.BookService;
 import com.papershare.papershare.service.ImageUploadService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,6 +50,7 @@ public class BookController {
     @GetMapping("/view/all")
     public String getAllBooks(@AuthenticationPrincipal UserDetails userDetails,
                               Model model,
+                              @RequestParam(required = false) String sortType,
                               @RequestParam(required = false) String title,
                               @RequestParam(required = false) String author,
                               @RequestParam(required = false) String publisher,
@@ -65,8 +64,8 @@ public class BookController {
 
             user.ifPresent(value -> model.addAttribute("user", value));
         }
-        // Отримання списку книг з бази даних
-        List<Book> books = bookService.getAllBooks().stream().filter(book -> book.isAvailable().equals(true))
+
+        List<Book> books = bookService.getAllBooks().stream().filter(Book::isAvailable)
                 .collect(Collectors.toList());
 
         if(title != null) {
@@ -102,7 +101,20 @@ public class BookController {
                     .collect(Collectors.toList());
         }
 
-        // Передача списку книг на сторінку через Thymeleaf
+        if(sortType != null) {
+            switch (sortType) {
+                case "newest":
+                    books.sort(Comparator.comparing(Book::getCreatedAt).reversed());
+                    break;
+                case "oldest":
+                    books.sort(Comparator.comparing(Book::getCreatedAt));
+                    break;
+                case "rating":
+                    //books.sort(Comparator.comparing(Book::getCreatedAt).reversed());
+                    break;
+            }
+        }
+
         model.addAttribute("books", books);
 
         return "book/books";
@@ -118,17 +130,15 @@ public class BookController {
         }
         Book book = bookService.getBookById(id);
 
-        if(book != null) {
-            // Передача книги на сторінку через Thymeleaf
+        if(book != null && book.isAvailable()) {
             model.addAttribute("book", book);
 
-            // Перевірка, чи поточный користувач не є власником книги
             boolean isOwner = userDetails != null && book.getOwner().getUsername().equals(userDetails.getUsername());
             model.addAttribute("isNotOwner", !isOwner);
 
             return "book/book_view";
         }
-        return "redirect:/?error=bookNotFound&book_id=" + id;
+        return "error/404";
     }
 
     @GetMapping("/my")
@@ -140,18 +150,14 @@ public class BookController {
             user.ifPresent(value -> model.addAttribute("user", value));
 
             if(user.isPresent()) {
-                // Отримання списку книг користувача з бази даних
-                List<Book> books = (List<Book>) user.get().getOwnedBooks();
+                List<Book> books = (List<Book>) user.get().getOwnedBooks().stream().filter(Book::isAvailable).collect(Collectors.toList());
 
-                // Передача списку книг на сторінку через Thymeleaf
                 model.addAttribute("books", books);
 
                 return "book/book_user_menu";
-            } else {
-                return "book/book_user_menu?error=userNotPresent";
             }
         }
-        return "book/book_user_menu?error=authError";
+        return "error/401";
     }
 
     @GetMapping("/create")
@@ -161,8 +167,10 @@ public class BookController {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
             user.ifPresent(value -> model.addAttribute("user", value));
+
+            return "book/book_create";
         }
-        return "book/book_create";
+        return "error/401";
     }
 
     @PostMapping("/create")
@@ -195,7 +203,7 @@ public class BookController {
                         book.setImageUrl(defaultImageCoverUrl);
                     }
 
-                    Book createdBook = bookService.createBook(book);
+                    Book createdBook = bookService.save(book);
 
                     if(createdBook != null) {
                         Long id = createdBook.getId();
@@ -203,10 +211,10 @@ public class BookController {
                         return "redirect:/book/view/" + id;
                     }
                 }
-                return "redirect:/book/create?error=\"create_problem\"";
+                return "error/400";
             }
         }
-        return "redirect:/book/create?error=\"auth_problem\"";
+        return "error/401";
     }
 
     @GetMapping("/edit/{id}")
@@ -228,10 +236,10 @@ public class BookController {
                         return "book/book_edit";
                     }
                 }
-                return "redirect:/?error=bookNotFound&book_id=" + id;
+                return "error/400";
             }
         }
-        return "redirect:/book/my?error=auth_problem";
+        return "error/401";
     }
 
     @PostMapping("/edit")
@@ -264,7 +272,7 @@ public class BookController {
                                 book.setImageUrl(bookService.getBookById(book.getId()).getImageUrl());
                             }
 
-                            Book createdBook = bookService.createBook(book);
+                            Book createdBook = bookService.save(book);
 
                             if (createdBook != null) {
                                 Long id = createdBook.getId();
@@ -272,13 +280,12 @@ public class BookController {
                                 return "redirect:/book/view/" + id;
                             }
                         }
-                        return "redirect:/book/edit/" + book.getId() + "?error=edit_problem";
                     }
                 }
-                return "redirect:/?error=bookNotFound&book_id=" + book.getId();
+                return "error/400";
             }
         }
-        return "redirect:/book/my?error=auth_problem";
+        return "error/401";
     }
 
     @GetMapping("/delete/{id}")
@@ -293,17 +300,16 @@ public class BookController {
             if(user.isPresent()) {
                 if(bookService.getBookById(id) != null) {
                     if (Objects.equals(user.get().getId(), bookService.getBookById(id).getOwner().getId())) {
-                        boolean isDeleted = bookService.deleteBook(id);
+                        Book deletedBook = bookService.getBookById(id);
+                        deletedBook.setAvailable(false);
+                        bookService.save(deletedBook);
 
-                        if (isDeleted) {
-                            return "redirect:/book/my";
-                        }
-                        return "redirect:/book/my?error=delete_problem";
+                        return "redirect:/book/my";
                     }
                 }
-                return "redirect:/?error=bookNotFound&book_id=" + id;
+                return "error/400";
             }
         }
-        return "redirect:/book/my?error=auth_problem";
+        return "error/401";
     }
 }

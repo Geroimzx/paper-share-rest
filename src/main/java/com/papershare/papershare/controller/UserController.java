@@ -26,29 +26,19 @@ public class UserController {
         this.userAuthenticationService = userAuthenticationService;
     }
 
-    @GetMapping
-    public String getUser(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        if(userDetails != null) {
-            Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
-
-            user.ifPresent(value -> model.addAttribute("user", value));
-
-            return "user/user";
-        }
-        return "error/400";
-    }
-
     @GetMapping("/{username}")
     public String getUserById(@AuthenticationPrincipal UserDetails userDetails, Model model, @PathVariable("username") String username) {
         if(userDetails != null) {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
-            Optional<User> userById = userAuthenticationService.findByUsername(username);
+
 
             user.ifPresent(value -> model.addAttribute("user", value));
-            userById.ifPresent(value -> model.addAttribute("user_by_id", value));
-
+        }
+        Optional<User> userByUsername = userAuthenticationService.findByUsername(username);
+        if(userByUsername.isPresent()) {
+            model.addAttribute("user_by_id", userByUsername.get());
             return "user/user";
         }
-        return "error/400";
+        return "error/404";
     }
 }

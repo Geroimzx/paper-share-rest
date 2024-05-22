@@ -131,8 +131,7 @@
                             <div class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" id="dropdown-menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                                 <div class="py-1" role="none">
                                     <button type="button" class="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Спочатку найновіші</button>
-                                    <button type="button" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Спочатку найстаріші</button>
-                                    <button type="button" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Спочатку з найкращим рейтингом користувача</button>
+                                    <button type="button" class="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Спочатку найстаріші</button>
                                 </div>
                             </div>
                         </div>
@@ -145,8 +144,8 @@
                     </div>
                 </div>
 
-                <section aria-labelledby="products-heading" class="pb-8 pt-2">
-                    <h2 id="products-heading" class="sr-only">Products</h2>
+                <section aria-labelledby="products-heading" class="pb-2 pt-2">
+                    <h2 id="products-heading" class="sr-only">Книги</h2>
 
                     <div class="grid grid-cols-1 gap-x-10 gap-y-2 lg:grid-cols-3">
                         <form class="hidden lg:block" th:action="@{/book/view/all}" method="get">
@@ -284,9 +283,6 @@
             case 'Спочатку найстаріші':
               button.dataset.sortType = 'oldest';
               break;
-            case 'Спочатку з найкращим рейтингом користувача':
-              button.dataset.sortType = 'rating';
-              break;
             default:
               button.dataset.sortType = '';
           }
@@ -308,11 +304,8 @@
               case 'menu-item-0':
                 sortType = 'newest';
                 break;
-              case 'menu-item-2':
-                sortType = 'oldest';
-                break;
               case 'menu-item-1':
-                sortType = 'rating';
+                sortType = 'oldest';
                 break;
             }
 

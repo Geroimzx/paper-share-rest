@@ -30,6 +30,12 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private Collection<Book> ownedBooks;
 
+    @OneToMany(mappedBy = "initiator")
+    private Collection<ExchangeRequest> exchangeRequests;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<WishlistItem> wishlistItems;
+
     @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<UserRating> ratedUserRating;
 
@@ -120,6 +126,22 @@ public class User {
 
     public void setOwnedBooks(Collection<Book> ownedBooks) {
         this.ownedBooks = ownedBooks;
+    }
+
+    public Collection<ExchangeRequest> getExchangeRequests() {
+        return exchangeRequests;
+    }
+
+    public void setExchangeRequests(Collection<ExchangeRequest> exchangeRequests) {
+        this.exchangeRequests = exchangeRequests;
+    }
+
+    public Collection<WishlistItem> getWishlistItems() {
+        return wishlistItems;
+    }
+
+    public void setWishlistItems(Collection<WishlistItem> wishlistItems) {
+        this.wishlistItems = wishlistItems;
     }
 
     public Collection<UserRating> getRatedUserRating() {

@@ -149,13 +149,15 @@
                                 <div>
                                     <p class="font-medium text-gray-900">
                                         Користувач
-                                        <a th:href="@{'/user/'+${exchangeRequest.initiator.username}}" class="text-blue-500" th:text="${exchangeRequest.initiator.username}"></a> хоче отримати:
+                                        <a th:href="@{'/user/'+${exchangeRequest.initiator.username}}" class="text-blue-500" th:text="${exchangeRequest.initiator.username}"></a> пропонує обміняти книгу:
                                         <a th:href="@{'/book/view/'+${exchangeRequest.requestedBook.id}}" class="text-blue-500" th:text="${exchangeRequest.requestedBook.title}"></a>
                                     </p>
                                     <div class="flex items-center">
                                         <p class="font-medium text-gray-900">
-                                            В обмін на:<span th:if="${exchangeRequest.offeredBook == null}">
-                                                <i class="fas fa-question-circle"></i>Книга не обрана
+                                            Надавши користувачу
+                                            <a th:href="@{'/user/'+${exchangeRequest.requestedBook.owner.username}}" class="text-blue-500" th:text="${exchangeRequest.requestedBook.owner.username}"></a>
+                                            взамін книгу:<span th:if="${exchangeRequest.offeredBook == null}">
+                                                <i class="fas fa-question-circle"></i>Книга ще не обрана користувачем, якому зробили пропозицію обміну
                                             </span>
                                             <a th:if="${exchangeRequest.offeredBook != null}" th:href="@{'/book/view/'+${exchangeRequest.offeredBook.id}}" class="text-blue-500"
                                                   th:text="${exchangeRequest.offeredBook.title}"></a>
@@ -186,7 +188,23 @@
                                                     Скасувати обмін
                                                 </a>
                                             </div>
-                                            <div class="flex flex-col items-start mt-4 space-y-2">
+                                            <div th:if="${exchangeRequest.requestedBook.owner.id == user.id &&
+                                                        exchangeRequest.requestBookOwnerConfirm == false}"
+                                                 class="flex flex-col items-start mt-4 space-y-2">
+                                                <a th:href="@{'/exchange/confirm?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                                   class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Підтвердити успішний обмін
+                                                </a>
+                                                <a th:href="@{'/exchange/failure?exchange_id='+${exchangeRequest.id}}"
+                                                   th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
+                                                   class="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                    Повідомити адміністратора про неуспішний обмін
+                                                </a>
+                                            </div>
+                                            <div th:if="${exchangeRequest.offeredBook != null && exchangeRequest.offeredBook.owner.id == user.id &&
+                                                        exchangeRequest.offerBookOwnerConfirm == false}"
+                                                 class="flex flex-col items-start mt-4 space-y-2">
                                                 <a th:href="@{'/exchange/confirm?exchange_id='+${exchangeRequest.id}}"
                                                    th:if="${exchangeRequest.status == T(com.papershare.papershare.model.ExchangeRequestStatus).ACCEPTED_BY_INITIATOR}"
                                                    class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -235,7 +253,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="informationAccuracy" value="5" id="informationAccuracy5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -258,7 +276,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="shippingSpeed" value="5" id="shippingSpeed5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -281,7 +299,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="overallExperience" value="5" id="overallExperience5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -321,7 +339,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="informationAccuracy" value="5" id="informationAccuracy5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="informationAccuracy5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -344,7 +362,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="shippingSpeed" value="5" id="shippingSpeed5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="shippingSpeed5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -367,7 +385,7 @@
                                                             </div>
                                                             <div class="mt-1 flex items-center">
                                                                 <input type="radio" name="overallExperience" value="5" id="overallExperience5" class="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірки</label>
+                                                                <label for="overallExperience5" class="ml-2 block text-sm text-gray-900">5 зірок</label>
                                                             </div>
                                                         </div>
                                                     </div>

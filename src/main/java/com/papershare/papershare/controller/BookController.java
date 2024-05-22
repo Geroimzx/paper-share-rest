@@ -4,6 +4,7 @@ import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.BookService;
 import com.papershare.papershare.service.ImageUploadService;
+import com.papershare.papershare.service.RecommendationService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,7 @@ public class BookController {
     private UserAuthenticationService userAuthenticationService;
 
     private BookService bookService;
+
 
     private ImageUploadService imageUploadService;
 
@@ -109,10 +111,9 @@ public class BookController {
                 case "oldest":
                     books.sort(Comparator.comparing(Book::getCreatedAt));
                     break;
-                case "rating":
-                    //books.sort(Comparator.comparing(Book::getCreatedAt).reversed());
-                    break;
             }
+        } else {
+            books.sort(Comparator.comparing(Book::getCreatedAt).reversed());
         }
 
         model.addAttribute("books", books);
@@ -136,7 +137,13 @@ public class BookController {
             boolean isOwner = userDetails != null && book.getOwner().getUsername().equals(userDetails.getUsername());
             model.addAttribute("isNotOwner", !isOwner);
 
-            return "book/book_view";
+            Optional<User> userByUsername = userAuthenticationService.findByUsername(book.getOwner().getUsername());
+            if(userByUsername.isPresent()) {
+                model.addAttribute("owner", userByUsername.get());
+
+
+                return "book/book_view";
+            }
         }
         return "error/404";
     }
@@ -226,14 +233,16 @@ public class BookController {
 
             if(user.isPresent()) {
                 if(bookService.getBookById(id) != null) {
-                    if (Objects.equals(user.get().getId(), bookService.getBookById(id).getOwner().getId())) {
-                        model.addAttribute("user", user.get());
+                    if(bookService.getBookById(book.getId()).isAvailable() == true) {
+                        if (Objects.equals(user.get().getId(), bookService.getBookById(id).getOwner().getId())) {
+                            model.addAttribute("user", user.get());
 
-                        book = bookService.getBookById(id);
+                            book = bookService.getBookById(id);
 
-                        model.addAttribute("book", book);
+                            model.addAttribute("book", book);
 
-                        return "book/book_edit";
+                            return "book/book_edit";
+                        }
                     }
                 }
                 return "error/400";
@@ -252,32 +261,33 @@ public class BookController {
             if(user.isPresent()) {
                 if(bookService.getBookById(book.getId()) != null) {
                     if (Objects.equals(user.get().getId(), bookService.getBookById(book.getId()).getOwner().getId())) {
-                        model.addAttribute("user", user.get());
+                        if(bookService.getBookById(book.getId()).isAvailable() == true) {
+                            model.addAttribute("user", user.get());
 
-                        book.setAvailable(true);
+                            book.setAvailable(true);
+                            book.setOwner(user.get());
 
-                        book.setOwner(user.get());
+                            if (!book.getTitle().isBlank() && !book.getAuthor().isBlank()
+                                    && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
+                                    && !book.getCoverType().isBlank() && book.getPublicationYear() > 0
+                                    && book.getNumberOfPages() > 0 && book.getGenre() != null
+                                    && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
 
-                        if (!book.getTitle().isBlank() && !book.getAuthor().isBlank()
-                                && !book.getPublisher().isBlank() && !book.getLanguage().isBlank()
-                                && !book.getCoverType().isBlank() && book.getPublicationYear() > 0
-                                && book.getNumberOfPages() > 0 && book.getGenre() != null
-                                && !book.getGenre().isBlank() && !book.getIsbn().isBlank()) {
+                                if (!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
+                                    String imageUrl = imageUploadService.uploadImage(uploadedImage);
 
-                            if (!uploadedImage.isEmpty() && Objects.requireNonNull(uploadedImage.getContentType()).startsWith("image/")) {
-                                String imageUrl = imageUploadService.uploadImage(uploadedImage);
+                                    book.setImageUrl(imageUrl);
+                                } else {
+                                    book.setImageUrl(bookService.getBookById(book.getId()).getImageUrl());
+                                }
 
-                                book.setImageUrl(imageUrl);
-                            } else {
-                                book.setImageUrl(bookService.getBookById(book.getId()).getImageUrl());
-                            }
+                                Book createdBook = bookService.save(book);
 
-                            Book createdBook = bookService.save(book);
+                                if (createdBook != null) {
+                                    Long id = createdBook.getId();
 
-                            if (createdBook != null) {
-                                Long id = createdBook.getId();
-
-                                return "redirect:/book/view/" + id;
+                                    return "redirect:/book/view/" + id;
+                                }
                             }
                         }
                     }

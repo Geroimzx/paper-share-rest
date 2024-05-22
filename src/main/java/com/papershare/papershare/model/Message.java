@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "messages")

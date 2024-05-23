@@ -93,8 +93,12 @@ public class ExchangeController {
                     if (requestedBook.getOwner().getId().equals(user.get().getId())) {
                         return "error/400";
                     } else {
-                        model.addAttribute("requested_book", requestedBook);
-                        return "exchange/exchange_create";
+                        Optional<User> userByUsername = userAuthenticationService.findByUsername(requestedBook.getOwner().getUsername());
+                        if(userByUsername.isPresent()) {
+                            model.addAttribute("owner", userByUsername.get());
+                            model.addAttribute("requested_book", requestedBook);
+                            return "exchange/exchange_create";
+                        }
                     }
                 } else {
                     return "error/404";

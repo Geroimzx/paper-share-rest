@@ -69,10 +69,83 @@
                 <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:href="@{'/book/view/'+${requested_book.id}}" target="_blank">Переглянути інформацію про книгу</a>
             </div>
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-2xl font-bold mb-2" for="user">Інформація про користувача</label>
-            <p class="mt-1 text-lg font-medium text-gray-900" id="user" th:text="${user.username}"></p>
+
+        <div class="container">
+            <h1 class="text-xl font-medium mb-4">Книга додана користувачем <span class="text-blue-500"><a th:href="@{'/user/'+${owner.username}}" th:text="${owner.username}"></a></span> <span class="text-gray-500" th:text="${#temporals.format(requested_book.createdAt, 'dd.MM.yyyy HH:mm')}"></span> </h1>
+            <h2 class="text-xl font-medium mb-4">Рейтинг користувача</h2>
+            <div>
+                <p class="font-semibold">Достовірність наданої інформації про книги:</p>
+                <div class="flex items-center">
+                    <div th:each="i : ${#numbers.sequence(1, 5)}"
+                         class="flex items-center mr-1">
+                        <svg th:if="${owner.averageInformationAccuracy != null} and ${owner.averageInformationAccuracy >= i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-full-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageInformationAccuracy != null} and ${owner.averageInformationAccuracy >= (i - 0.5) and owner.averageInformationAccuracy < i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-half-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageInformationAccuracy == null} or ${owner.averageInformationAccuracy < (i - 0.5)}"
+                             class="w-8 h-8 text-gray-300 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-empty-star"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <p class="font-semibold">Швидкість відправлення книг:</p>
+                <div class="flex items-center">
+                    <div th:each="i : ${#numbers.sequence(1, 5)}"
+                         class="flex items-center mr-1">
+                        <svg th:if="${owner.averageShippingSpeed != null} and ${owner.averageShippingSpeed} >= ${i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-full-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageShippingSpeed != null} and ${owner.averageShippingSpeed >= (i - 0.5) and owner.averageShippingSpeed < i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-half-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageShippingSpeed == null} or ${owner.averageShippingSpeed < (i - 0.5)}"
+                             class="w-8 h-8 text-gray-300 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-empty-star"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-4">
+                <p class="font-semibold">Загальний досвід обміну з користувачем:</p>
+                <div class="flex items-center">
+                    <div th:each="i : ${#numbers.sequence(1, 5)}"
+                         class="flex items-center mr-1">
+                        <svg th:if="${owner.averageOverallExperience != null} and ${owner.averageOverallExperience} >= ${i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-full-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageOverallExperience != null} and ${owner.averageOverallExperience >= (i - 0.5) && owner.averageOverallExperience < i}"
+                             class="w-8 h-8 text-yellow-500 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-half-star"/>
+                        </svg>
+                        <svg th:if="${owner.averageOverallExperience == null} or ${owner.averageOverallExperience < (i - 0.5)}"
+                             class="w-8 h-8 text-gray-300 fill-current"
+                             viewBox="0 0 20 20">
+                            <use xlink:href="#stars-empty-star"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <form th:action="@{/exchange/create(requestedBook=${requested_book.id})}" method="post" class="flex items-center justify-between">
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                 Створити обмін
@@ -81,6 +154,17 @@
     </div>
 </div>
 
+<svg id="stars" style="display: none;">
+    <symbol id="stars-empty-star" viewBox="0 0 20 20" fill="#F1E8CA">
+        <path d="M9.5 14.25l-5.584 2.936 1.066-6.218L.465 6.564l6.243-.907L9.5 0l2.792 5.657 6.243.907-4.517 4.404 1.066 6.218"></path>
+    </symbol>
+    <symbol id="stars-full-star" viewBox="0 0 20 20" fill="#D3A81E">
+        <path d="M9.5 14.25l-5.584 2.936 1.066-6.218L.465 6.564l6.243-.907L9.5 0l2.792 5.657 6.243.907-4.517 4.404 1.066 6.218"></path>
+    </symbol>
+    <symbol id="stars-half-star" viewBox="0 0 20 20" fill="#D3A81E">
+        <path d="M9.5 14.25l-5.584 2.936 1.066-6.218L.465 6.564l6.243-.907L9.5 0l2.792 2000"></path>
+    </symbol>
+</svg>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

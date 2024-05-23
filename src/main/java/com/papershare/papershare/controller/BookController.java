@@ -2,10 +2,7 @@ package com.papershare.papershare.controller;
 
 import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
-import com.papershare.papershare.service.BookService;
-import com.papershare.papershare.service.ImageUploadService;
-import com.papershare.papershare.service.RecommendationService;
-import com.papershare.papershare.service.UserAuthenticationService;
+import com.papershare.papershare.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,8 +28,9 @@ public class BookController {
 
     private BookService bookService;
 
-
     private ImageUploadService imageUploadService;
+
+    private WishlistItemService wishlistItemService;
 
     @Autowired
     public void setUserAuthenticationService(UserAuthenticationService userAuthenticationService) {
@@ -47,6 +45,11 @@ public class BookController {
     @Autowired
     public void setImageUploadService(ImageUploadService imageUploadService) {
         this.imageUploadService = imageUploadService;
+    }
+
+    @Autowired
+    public void setWishlistItemService(WishlistItemService wishlistItemService) {
+        this.wishlistItemService = wishlistItemService;
     }
 
     @GetMapping("/view/all")
@@ -127,7 +130,11 @@ public class BookController {
         if(userDetails != null) {
             Optional<User> user = userAuthenticationService.findByUsername(userDetails.getUsername());
 
-            user.ifPresent(value -> model.addAttribute("user", value));
+            if(user.isPresent()) {
+                model.addAttribute("user", user.get());
+                boolean isInWishlist = wishlistItemService.existsByUserIdAndBookId(user.get().getId(), id);
+                model.addAttribute("isInWishlist", isInWishlist);
+            }
         }
         Book book = bookService.getBookById(id);
 
@@ -140,7 +147,6 @@ public class BookController {
             Optional<User> userByUsername = userAuthenticationService.findByUsername(book.getOwner().getUsername());
             if(userByUsername.isPresent()) {
                 model.addAttribute("owner", userByUsername.get());
-
 
                 return "book/book_view";
             }

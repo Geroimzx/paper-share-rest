@@ -55,11 +55,18 @@
             <div class="mt-8" th:if="${isNotOwner}">
                 <div sec:authorize="isAuthenticated()" class="mt-8 space-y-2">
                     <a th:href="@{/exchange/create(requestedBook=${book.id})}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Запропонувати обмін</a>
-                    <button th:id="'addToWishlistBtn-'+${book.id}" type="button"
-                            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
-                            th:data-book-id="${book.id}">
-                        Додати в список бажань
-                    </button>
+                    <div th:if="${isInWishlist != null}">
+                        <button th:if="${isInWishlist}" th:id="'addToWishlistBtn-'+${book.id}" type="button"
+                                class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded in-wishlist"
+                                th:data-book-id="${book.id}">
+                            Видалити зі списку бажань
+                        </button>
+                        <button th:unless="${isInWishlist}" th:id="'addToWishlistBtn-'+${book.id}" type="button"
+                                class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+                                th:data-book-id="${book.id}">
+                            Додати в список бажань
+                        </button>
+                    </div>
                 </div>
                 <p sec:authorize="!isAuthenticated()" class="font-medium text-gray-900">Для здійснення обміну необхідно <a class="text-blue-600 hover:opacity-75" th:href="@{/user/auth/sign_in}">авторизуватись</a></p>
             </div>
@@ -159,25 +166,36 @@
     const buttons = document.querySelectorAll('[id^="addToWishlistBtn-"]');
 
     buttons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            const bookId = event.target.dataset.bookId;
-            fetch('/wishlist/add/' + bookId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                event.target.textContent = 'В списку бажань';
-                event.target.disabled = true;
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+      button.addEventListener('click', (event) => {
+        const bookId = event.target.dataset.bookId;
+        const url = event.target.classList.contains('in-wishlist')
+          ? `/wishlist/delete/${bookId}`
+          : `/wishlist/add/${bookId}`;
+        const method = event.target.classList.contains('in-wishlist') ? 'DELETE' : 'POST';
+
+        fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          // Переключаємо текст і клас кнопки
+          if (event.target.classList.contains('in-wishlist')) {
+            event.target.textContent = 'Додати в список бажань';
+            event.target.classList.remove('in-wishlist');
+          } else {
+            event.target.textContent = 'Видалити зі списку бажань';
+            event.target.classList.add('in-wishlist');
+          }
+        })
+        .catch(error => {
+          console.error('There has been a problem with your fetch operation:', error);
         });
+      });
     });
 </script>
 

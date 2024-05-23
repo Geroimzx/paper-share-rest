@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Список бажань - PaperShare</title>
+    <div th:replace="~{fragments/links}"></div>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="bg-white py-8">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pb-8">Список бажань</h2>
+        <div th:each="wishlistItem : ${wishlist}" class="group outline outline-1 px-4 py-4 rounded outline-gray-200 flex">
+            <div class="flex">
+                <a th:href="@{'/book/view/'+${wishlistItem.book.id}}" class="w-40 overflow-hidden rounded-lg bg-gray-200 shrink-0 group">
+                    <img th:src="@{${wishlistItem.book.imageUrl}}" alt="Обкладинка книги" class="cover-cover group-hover:opacity-75">
+                </a>
+                <div class="ml-4">
+                    <a th:href="@{'/book/view/'+${wishlistItem.book.id}}" class="group">
+                        <p class="mt-1 mb-1 text-lg font-medium text-gray-900 group-hover:opacity-75" th:text="${wishlistItem.book.title}"></p>
+                        <h3 class="mt-4 text-sm text-gray-700 group-hover:opacity-75" th:text="${wishlistItem.book.author}"></h3>
+                    </a>
+                    <div class="mt-4 flex items-center justify-between">
+                        <button th:id="'addToWishlistBtn-'+${wishlistItem.book.id}" type="button"
+                                class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded in-wishlist"
+                                th:data-book-id="${wishlistItem.book.id}">
+                            Видалити зі списку бажань
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+    const buttons = document.querySelectorAll('[id^="addToWishlistBtn-"]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        const bookId = event.target.dataset.bookId;
+        const url = event.target.classList.contains('in-wishlist')
+          ? `/wishlist/delete/${bookId}`
+          : `/wishlist/add/${bookId}`;
+        const method = event.target.classList.contains('in-wishlist') ? 'DELETE' : 'POST';
+
+        fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          location.reload();
+        })
+        .catch(error => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
+      });
+    });
+</script>
+</body>
+</html>

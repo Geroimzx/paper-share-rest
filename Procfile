@@ -1,1 +1,1 @@
-web: java -jar target/papershare-1.0.jar
+web: java -Dserver.port=$PORT -jar target/papershare-1.0.war

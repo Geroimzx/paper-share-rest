@@ -12,6 +12,4 @@ spring:
       ddl-auto: update
   logging:
     level:
-      org:
-        springframework:
-          security: DEBUG
+      root: DEBUG

@@ -1,0 +1,1 @@
+web: java -jar target/papershare-1.0.jar

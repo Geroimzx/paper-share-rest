@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.papershare</groupId>
 	<artifactId>papershare</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>paperShare</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Papershare project</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud-gcp.version>5.1.2</spring-cloud-gcp.version>

@@ -10,6 +10,7 @@
 
 <div class="container mx-auto px-4 py-8">
     <h2 class="text-2xl font-bold mb-4">Запити на обмін</h2>
+    <p class="text-xl text-gray-800" th:if="${exchange_requests.isEmpty()}">Запропонуйте обмін книг іншому користувачеві або отримайте пропозиції обмінів, щоб отримати тут інформацію про них.</p>
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2" th:each="exchangeRequest : ${exchange_requests}">
         <div>
             <p>Обмін №<span th:text="${exchangeRequest.id}"></span>.

@@ -65,9 +65,8 @@ public class ExchangeController {
                 List<ExchangeRequest> exchangeRequests = exchangeRequestService.getAllExchangeRequestsByUserId(user.get().getId());
                 exchangeRequests.sort(Comparator.comparing(ExchangeRequest::getUpdatedAt).reversed());
 
-                if(!exchangeRequests.isEmpty()) {
-                    model.addAttribute("exchange_requests", exchangeRequests);
-                }
+                model.addAttribute("exchange_requests", exchangeRequests);
+
                 return "exchange/exchange_view";
             }
         }

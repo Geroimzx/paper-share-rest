@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -48,7 +50,9 @@ public class WishlistController {
 
             if (user.isPresent()) {
                 model.addAttribute("user", user.get());
-                model.addAttribute("wishlist", wishlistItemService.getAllWishlistItemsByUserId(user.get().getId()));
+                List<WishlistItem> wishlistItems = wishlistItemService.getAllWishlistItemsByUserId(user.get().getId());
+                Collections.reverse(wishlistItems);
+                model.addAttribute("wishlist", wishlistItems);
                 return "wishlist/wishlist_view";
             }
         }

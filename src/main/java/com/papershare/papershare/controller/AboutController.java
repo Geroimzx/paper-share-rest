@@ -1,13 +1,12 @@
 package com.papershare.papershare.controller;
 
+import com.papershare.papershare.model.Book;
 import com.papershare.papershare.model.User;
 import com.papershare.papershare.service.BookService;
 import com.papershare.papershare.service.ExchangeRequestService;
 import com.papershare.papershare.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,11 +48,11 @@ public class AboutController {
             user.ifPresent(value -> model.addAttribute("user", value));
         }
 
-        int countOfAvailableBooks = bookService.getAllBooks().size();
+        long countOfAvailableBooks = bookService.getCountOfAllAvailableBooks();
 
-        int countOfExchangeRequest = exchangeRequestService.getCountOfAllExchangeRequests();
+        long countOfExchangeRequest = exchangeRequestService.getCountOfAllSuccessExchangeRequests();
 
-        int countOfUsers = userAuthenticationService.findAllUsers().size();
+        long countOfUsers = userAuthenticationService.getCountOfAllUsers();
 
         model.addAttribute("countOfAvailableBooks", countOfAvailableBooks);
 

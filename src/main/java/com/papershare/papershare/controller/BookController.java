@@ -74,34 +74,42 @@ public class BookController {
                 .collect(Collectors.toList());
 
         if(title != null) {
+            model.addAttribute("searched_title", title);
             books = books.stream().filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(author != null) {
+            model.addAttribute("searched_author", author);
             books = books.stream().filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(publisher != null) {
+            model.addAttribute("searched_publisher", publisher);
             books = books.stream().filter(book -> book.getPublisher().toLowerCase().contains(publisher.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(genre != null) {
+            model.addAttribute("searched_genre", genre);
             books = books.stream().filter(book -> book.getGenre().toLowerCase().contains(genre.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(coverType != null) {
+            model.addAttribute("searched_coverType", coverType);
             books = books.stream().filter(book -> book.getCoverType().toLowerCase().contains(coverType.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(language != null) {
+            model.addAttribute("searched_language", language);
             books = books.stream().filter(book -> book.getLanguage().toLowerCase().contains(language.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if(publicationYear != null) {
+            model.addAttribute("searched_publicationYear", publicationYear);
             books = books.stream().filter(book -> book.getPublicationYear().equals(publicationYear))
                     .collect(Collectors.toList());
         }
         if(isbn != null) {
+            model.addAttribute("searched_isbn", isbn);
             books = books.stream().filter(book -> book.getIsbn().toLowerCase().contains(isbn.toLowerCase()))
                     .collect(Collectors.toList());
         }

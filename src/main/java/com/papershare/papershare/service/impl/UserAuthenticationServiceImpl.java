@@ -59,7 +59,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public void deleteUser(String username) {
-
+    public long getCountOfAllUsers() {
+        return userRepository.count();
     }
 }

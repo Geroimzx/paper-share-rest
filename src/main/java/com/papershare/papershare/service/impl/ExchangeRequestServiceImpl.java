@@ -1,6 +1,7 @@
 package com.papershare.papershare.service.impl;
 
 import com.papershare.papershare.model.ExchangeRequest;
+import com.papershare.papershare.model.ExchangeRequestStatus;
 import com.papershare.papershare.repository.ExchangeRequestRepository;
 import com.papershare.papershare.service.ExchangeRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ExchangeRequestServiceImpl implements ExchangeRequestService {
@@ -41,7 +43,7 @@ public class ExchangeRequestServiceImpl implements ExchangeRequestService {
     }
 
     @Override
-    public int getCountOfAllExchangeRequests() {
-        return exchangeRequestRepository.findAll().size();
+    public long getCountOfAllSuccessExchangeRequests() {
+        return exchangeRequestRepository.countSuccessfulExchanges();
     }
 }

@@ -35,4 +35,9 @@ public class BookServiceImpl implements BookService {
     public Book save(Book book) {
         return bookRepository.save(book);
     }
+
+    @Override
+    public long getCountOfAllAvailableBooks() {
+        return bookRepository.countByAvailableTrue();
+    }
 }

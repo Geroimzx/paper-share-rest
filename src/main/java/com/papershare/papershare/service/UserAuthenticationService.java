@@ -16,5 +16,5 @@ public interface UserAuthenticationService {
 
     User updateUser(User user);
 
-    void deleteUser(String username);
+    long getCountOfAllUsers();
 }

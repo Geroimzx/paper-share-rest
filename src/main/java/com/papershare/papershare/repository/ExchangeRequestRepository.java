@@ -16,4 +16,7 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
             "LEFT JOIN er.requestedBook br ON br.owner.id = :userId " +
             "WHERE (bo.id IS NOT NULL OR br.id IS NOT NULL) OR er.initiator.id = :userId")
     List<ExchangeRequest> getAllExchangeRequestsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(er) FROM ExchangeRequest er WHERE er.status = 'SUCCESS'")
+    long countSuccessfulExchanges();
 }

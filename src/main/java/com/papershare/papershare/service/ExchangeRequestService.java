@@ -16,5 +16,5 @@ public interface ExchangeRequestService {
 
     void deleteExchangeRequest(Long id);
 
-    int getCountOfAllExchangeRequests();
+    long getCountOfAllSuccessExchangeRequests();
 }

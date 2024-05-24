@@ -32,7 +32,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-title">
                                     <div class="space-y-4">
-                                        <input type="text" name="title" id="mobile-title" placeholder="Назва книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_title}" name="title" id="mobile-title" placeholder="Назва книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-author">
                                     <div class="space-y-4">
-                                        <input type="text" name="author" id="mobile-author" placeholder="Автор книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_author}" name="author" id="mobile-author" placeholder="Автор книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-publisher">
                                     <div class="space-y-4">
-                                        <input type="text" name="publisher" id="mobile-publisher" placeholder="Видавець книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_publisher}" name="publisher" id="mobile-publisher" placeholder="Видавець книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-genre">
                                     <div class="space-y-4">
-                                        <input type="text" name="genre" id="mobile-genre" placeholder="Жанри книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_genre}" name="genre" id="mobile-genre" placeholder="Жанри книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-coverType">
                                     <div class="space-y-4">
-                                        <input type="text" name="coverType" id="mobile-coverType" placeholder="Тип обкладинки книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_coverType}" name="coverType" id="mobile-coverType" placeholder="Тип обкладинки книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-language">
                                     <div class="space-y-4">
-                                        <input type="text" name="language" id="mobile-language" placeholder="Мова книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_isbn}" name="language" id="mobile-language" placeholder="Мова книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -92,7 +92,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-publicationYear">
                                     <div class="space-y-4">
-                                        <input type="number" name="publicationYear" id="mobile-publicationYear" placeholder="Рік видання книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="number" th:value="${searched_publicationYear}" name="publicationYear" id="mobile-publicationYear" placeholder="Рік видання книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                 </h3>
                                 <div class="pt-6" id="mobile-filter-section-isbn">
                                     <div class="space-y-4">
-                                        <input type="text" name="isbn" id="mobile-isbn" placeholder="ISBN книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_isbn}" name="isbn" id="mobile-isbn" placeholder="ISBN книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-title">
                                     <div class="space-y-4">
-                                        <input type="text" name="title" id="title" placeholder="Назва книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_title}" name="title" id="title" placeholder="Назва книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-author">
                                     <div class="space-y-4">
-                                        <input type="text" name="author" id="author" placeholder="Автор книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_author}" name="author" id="author" placeholder="Автор книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-publisher">
                                     <div class="space-y-4">
-                                        <input type="text" name="publisher" id="publisher" placeholder="Видавець книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_publisher}" name="publisher" id="publisher" placeholder="Видавець книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-genre">
                                     <div class="space-y-4">
-                                        <input type="text" name="genre" id="genre" placeholder="Жанри книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_genre}" name="genre" id="genre" placeholder="Жанри книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-coverType">
                                     <div class="space-y-4">
-                                        <input type="text" name="coverType" id="coverType" placeholder="Тип обкладинки книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_coverType}" name="coverType" id="coverType" placeholder="Тип обкладинки книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -205,7 +205,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-language">
                                     <div class="space-y-4">
-                                        <input type="text" name="language" id="language" placeholder="Мова книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_language}" name="language" id="language" placeholder="Мова книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +215,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-publicationYear">
                                     <div class="space-y-4">
-                                        <input type="number" name="publicationYear" id="publicationYear" placeholder="Рік видання книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="number" th:value="${searched_publicationYear}" name="publicationYear" id="publicationYear" placeholder="Рік видання книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +225,7 @@
                                 </h3>
                                 <div class="pt-6" id="filter-section-isbn">
                                     <div class="space-y-4">
-                                        <input type="text" name="isbn" id="isbn" placeholder="ISBN книги" class="w-full px-3 py-2 border rounded-md">
+                                        <input type="text" th:value="${searched_isbn}" name="isbn" id="isbn" placeholder="ISBN книги" class="w-full px-3 py-2 border rounded-md">
                                     </div>
                                 </div>
                             </div>

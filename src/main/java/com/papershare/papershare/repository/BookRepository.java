@@ -16,4 +16,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     public Optional<Book> findById(Long id);
 
     public List<Book> findAll();
+
+    long countByAvailableTrue();
 }
